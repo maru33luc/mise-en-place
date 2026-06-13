@@ -1,0 +1,37 @@
+@baseUrl = http://localhost:3000
+
+### Health Check
+GET {{baseUrl}}/api/health
+
+### Get All Recipes
+GET {{baseUrl}}/api/recipes
+
+### Get Recipe by ID
+GET {{baseUrl}}/api/recipes/1
+
+### Create Recipe
+POST {{baseUrl}}/api/recipes
+Content-Type: application/json
+
+{
+  "title": "Tortilla Española",
+  "description": "Tortilla tradicional con papas y cebolla",
+  "difficulty": "easy",
+  "ingredients": [
+    { "name": "papas", "amount": 500, "unit": "g" },
+    { "name": "huevos", "amount": 6, "unit": "unidad" },
+    { "name": "cebolla", "amount": 2, "unit": "unidad" }
+  ]
+}
+
+### Update Recipe
+PUT {{baseUrl}}/api/recipes/1
+Content-Type: application/json
+
+{
+  "title": "Pasta Carbonara - Mejorada",
+  "difficulty": "hard"
+}
+
+### Delete Recipe
+DELETE {{baseUrl}}/api/recipes/2

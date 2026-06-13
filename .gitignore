@@ -1,0 +1,60 @@
+# ─── Dependencies ─────────────────────────────────────────────
+node_modules/
+**/node_modules/
+.pnp
+.pnp.js
+
+# ─── Environment & Secrets ────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Build Output ─────────────────────────────────────────────
+dist/
+build/
+out/
+out-tsc/
+tmp/
+
+# ─── Angular ──────────────────────────────────────────────────
+.angular/cache/
+*.tsbuildinfo
+
+# ─── Coverage & Testing ───────────────────────────────────────
+coverage/
+.nyc_output/
+
+# ─── Logs ─────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ─── OS ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ─── IDEs ─────────────────────────────────────────────────────
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# VSCode — keep shared settings, ignore personal/local
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.history/
+
+# ─── Misc ─────────────────────────────────────────────────────
+*.tgz
+*.zip
+.sass-cache/
+connect.lock
