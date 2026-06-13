@@ -107,13 +107,13 @@ export class App implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Error al actualizar receta');
+        this.error.set(this.formatError(err));
         this.loading.set(false);
       }
     });
   }
 
-  protected loadRecipes(): void {
+  protected toggleForm(): void {
     this.loading.set(true);
     this.error.set(null);
     
@@ -137,8 +137,28 @@ export class App implements OnInit {
     const amount = parseFloat(this.ingredientAmount());
     const unit = this.ingredientUnit().trim();
 
-    if (!name || !amount || !unit) {
-      this.error.set('Completa todos los campos del ingrediente');
+    if (!name) {
+      this.error.set('El nombre del ingrediente es requerido');
+      setTimeout(() => this.error.set(null), 3000);
+      return;
+    }
+    if (!isNaN(Number(name))) {
+      this.error.set('El nombre del ingrediente no puede ser solo un número');
+      setTimeout(() => this.error.set(null), 3000);
+      return;
+    }
+    if (!this.ingredientAmount().trim() || isNaN(amount) || amount <= 0) {
+      this.error.set('La cantidad debe ser un número positivo');
+      setTimeout(() => this.error.set(null), 3000);
+      return;
+    }
+    if (!unit) {
+      this.error.set('La unidad es requerida');
+      setTimeout(() => this.error.set(null), 3000);
+      return;
+    }
+    if (!isNaN(Number(unit))) {
+      this.error.set('La unidad no puede ser solo un número');
       setTimeout(() => this.error.set(null), 3000);
       return;
     }
@@ -164,8 +184,24 @@ export class App implements OnInit {
     const description = this.newRecipeDescription().trim();
     const ingredients = this.tempIngredients();
 
-    if (!title || !description || ingredients.length === 0) {
-      this.error.set('Completa todos los campos y agrega al menos 1 ingrediente');
+    if (!title) {
+      this.error.set('El título es requerido');
+      return;
+    }
+    if (!isNaN(Number(title))) {
+      this.error.set('El título no puede ser solo un número');
+      return;
+    }
+    if (!description) {
+      this.error.set('La descripción es requerida');
+      return;
+    }
+    if (!isNaN(Number(description))) {
+      this.error.set('La descripción no puede ser solo un número');
+      return;
+    }
+    if (ingredients.length === 0) {
+      this.error.set('Agrega al menos 1 ingrediente');
       return;
     }
 
@@ -191,7 +227,7 @@ export class App implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Error al crear receta');
+        this.error.set(this.formatError(err));
         console.error(err);
         this.loading.set(false);
       }
@@ -241,7 +277,13 @@ export class App implements OnInit {
     this.newRecipeDifficulty.set('easy');
   }
 
-  protected toggleForm(): void {
+  private formatError(err: any): string {
+    const apiErrors = err.error?.errors;
+    if (Array.isArray(apiErrors) && apiErrors.length > 0) {
+      return apiErrors.map((e: any) => e.message).join(' · ');
+    }
+    return err.error?.message || 'Error inesperado';
+  }
     this.showForm.update(v => !v);
     if (!this.showForm()) {
       this.resetForm();

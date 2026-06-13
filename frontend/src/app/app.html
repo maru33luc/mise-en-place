@@ -9,7 +9,7 @@
   <div class="app-shell">
 
   <!-- Mensajes de estado -->
-  <div *ngIf="error() && !showForm()" class="alert alert-error">
+  <div *ngIf="error()" class="alert alert-error">
     <span>⚠️ {{ error() }}</span>
     <button (click)="error.set(null)" class="close-btn">✕</button>
   </div>
