@@ -113,10 +113,9 @@ export class App implements OnInit {
     });
   }
 
-  protected toggleForm(): void {
+  protected loadRecipes(): void {
     this.loading.set(true);
     this.error.set(null);
-    
     this.recipeService.getAll().subscribe({
       next: (response) => {
         if (response.success && response.data) {
@@ -130,6 +129,14 @@ export class App implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  protected toggleForm(): void {
+    this.showForm.update(v => !v);
+    if (!this.showForm()) {
+      this.resetForm();
+      this.error.set(null);
+    }
   }
 
   protected addIngredient(): void {
@@ -283,11 +290,5 @@ export class App implements OnInit {
       return apiErrors.map((e: any) => e.message).join(' · ');
     }
     return err.error?.message || 'Error inesperado';
-  }
-    this.showForm.update(v => !v);
-    if (!this.showForm()) {
-      this.resetForm();
-      this.error.set(null);
-    }
   }
 }
