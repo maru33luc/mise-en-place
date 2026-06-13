@@ -131,37 +131,75 @@
     </div>
 
     <div *ngIf="recipes().length > 0; else emptyState" class="recipes-grid">
-      <div *ngFor="let recipe of recipes()" class="recipe-card">
-        <div class="recipe-card-top">
-          <div class="recipe-badge" [class]="'badge-' + recipe.difficulty">
-            {{ getDifficultyLabel(recipe.difficulty) }}
-          </div>
-          <h3>{{ recipe.title }}</h3>
-          <p class="recipe-description">{{ recipe.description }}</p>
-        </div>
+      <div *ngFor="let recipe of recipes()" class="recipe-card" [class.recipe-card--editing]="editingId() === recipe.id">
 
-        <div class="recipe-card-body">
-          <div class="ingredients-section">
-            <h4>Ingredientes</h4>
-            <ul class="ingredients-list">
-              <li *ngFor="let ing of recipe.ingredients">
-                <span class="ingredient-name">{{ ing.name }}</span>
-                <span class="ingredient-amount">{{ ing.amount }} {{ ing.unit }}</span>
-              </li>
-            </ul>
+        <!-- MODO EDICIÓN -->
+        <ng-container *ngIf="editingId() === recipe.id && editForm">
+          <div class="edit-form">
+            <div class="form-group">
+              <label>Título</label>
+              <input type="text" class="text-input" [(ngModel)]="editForm.title" name="edit-title-{{recipe.id}}" />
+            </div>
+            <div class="form-group">
+              <label>Descripción</label>
+              <textarea class="text-input" [(ngModel)]="editForm.description" name="edit-desc-{{recipe.id}}" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Dificultad</label>
+              <select class="text-input" [(ngModel)]="editForm.difficulty" name="edit-diff-{{recipe.id}}">
+                <option value="easy">Fácil</option>
+                <option value="medium">Media</option>
+                <option value="hard">Difícil</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Ingredientes</label>
+              <div class="ingredient-input">
+                <input type="text" class="text-input" [(ngModel)]="editForm.ingredientName" name="edit-ing-name-{{recipe.id}}" placeholder="Nombre" />
+                <input type="number" class="text-input" [(ngModel)]="editForm.ingredientAmount" name="edit-ing-amt-{{recipe.id}}" placeholder="Cantidad" step="0.1" />
+                <input type="text" class="text-input" [(ngModel)]="editForm.ingredientUnit" name="edit-ing-unit-{{recipe.id}}" placeholder="Unidad" />
+                <button type="button" class="secondary-button" (click)="addEditIngredient()">+</button>
+              </div>
+              <div *ngIf="editForm.ingredients.length > 0" class="ingredients-preview">
+                <div *ngFor="let ing of editForm.ingredients; let i = index" class="ingredient-tag">
+                  <span>{{ ing.name }} — {{ ing.amount }} {{ ing.unit }}</span>
+                  <button type="button" class="tag-close" (click)="removeEditIngredient(i)">×</button>
+                </div>
+              </div>
+            </div>
+            <div class="edit-actions">
+              <button type="button" class="primary-button" (click)="saveEdit()" [disabled]="loading()">Guardar</button>
+              <button type="button" class="secondary-button" (click)="cancelEdit()">Cancelar</button>
+            </div>
           </div>
-        </div>
+        </ng-container>
 
-        <div class="recipe-card-footer">
-          <button 
-            type="button" 
-            (click)="removeRecipe(recipe.id)" 
-            class="delete-button"
-            [disabled]="loading()"
-          >
-            Eliminar
-          </button>
-        </div>
+        <!-- MODO VISTA -->
+        <ng-container *ngIf="editingId() !== recipe.id">
+          <div class="recipe-card-top">
+            <div class="recipe-badge" [class]="'badge-' + recipe.difficulty">
+              {{ getDifficultyLabel(recipe.difficulty) }}
+            </div>
+            <h3>{{ recipe.title }}</h3>
+            <p class="recipe-description">{{ recipe.description }}</p>
+          </div>
+          <div class="recipe-card-body">
+            <div class="ingredients-section">
+              <h4>Ingredientes</h4>
+              <ul class="ingredients-list">
+                <li *ngFor="let ing of recipe.ingredients">
+                  <span class="ingredient-name">{{ ing.name }}</span>
+                  <span class="ingredient-amount">{{ ing.amount }} {{ ing.unit }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="recipe-card-footer">
+            <button type="button" class="edit-button" (click)="startEdit(recipe)" [disabled]="loading()">Editar</button>
+            <button type="button" class="delete-button" (click)="removeRecipe(recipe.id)" [disabled]="loading()">Eliminar</button>
+          </div>
+        </ng-container>
+
       </div>
     </div>
 

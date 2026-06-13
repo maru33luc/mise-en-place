@@ -336,10 +336,19 @@ textarea {
 }
 
 .delete-button {
+  cursor: pointer;
+  flex: 1;
   background: transparent;
   color: #c05050;
   border: 1px solid #2a1515;
-  width: 100%;
+  border-radius: 2px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  padding: 0.9rem 1.5rem;
+  font-family: inherit;
 }
 
 .delete-button:hover:not(:disabled) {
@@ -351,6 +360,25 @@ textarea {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* EDIT MODE */
+.recipe-card--editing {
+  border-top-color: #c9a96e;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.edit-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.edit-actions button { flex: 1; }
 
 /* RECIPES GRID */
 .recipes-section { margin-bottom: 4rem; }
@@ -391,6 +419,34 @@ textarea {
 .recipe-card-footer {
   margin-top: auto;
   padding-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.edit-button {
+  cursor: pointer;
+  flex: 1;
+  background: transparent;
+  color: #c9a96e;
+  border: 1px solid #3a2e18;
+  border-radius: 2px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  padding: 0.9rem 1.5rem;
+  font-family: inherit;
+}
+
+.edit-button:hover:not(:disabled) {
+  background: #1a1408;
+  border-color: #c9a96e;
+}
+
+.edit-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .recipe-badge {
