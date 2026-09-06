@@ -16,8 +16,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
 }
+
+  /* Difuminado cinematográfico hero → cards */
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -120px;
+    left: 0;
+    right: 0;
+    height: 400px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(8, 8, 8, 0.32) 45%,
+      rgba(8, 8, 8, 0.72) 65%,
+      #080808 85%
+    );
+    pointer-events: none;
+    z-index: 3;
+  }
 
 .hero-backdrop {
   position: absolute;
@@ -45,7 +64,7 @@
     180deg,
     rgba(8, 8, 8, 0.3) 0%,
     rgba(8, 8, 8, 0.5) 50%,
-    rgba(8, 8, 8, 0.95) 100%
+    #080808 100%
   );
 }
 
@@ -176,11 +195,17 @@
   50% { opacity: 1; transform: scaleY(1); }
 }
 
-/* ========== CONTENT ========== */
+/* ========== CONTENT BAND ========== */
+  /* Fondo liso #080808: sin overlays ni halos que rompan la profundidad de las sombras */
+  .content-band {
+    background: #080808;
+    padding: 2rem 0 7rem;
+  }
+
 .app-shell {
   width: min(100%, 1200px);
   margin: 0 auto;
-  padding: 5rem 2rem 8rem;
+  padding: 3rem 2rem 0;
   animation: fadeInUp 0.8s ease-out 0.5s both;
 }
 
@@ -223,7 +248,8 @@
 @media (max-width: 768px) {
   .hero { min-height: 500px; }
   .hero-title { font-size: clamp(2.5rem, 12vw, 4rem); }
-  .app-shell { padding: 3rem 1.25rem 6rem; }
+  .content-band { padding: 1.5rem 0 4rem; }
+  .app-shell { padding: 2rem 1.25rem 0; }
   .fab-button { bottom: 1.5rem; right: 1.5rem; width: 52px; height: 52px; }
   .badge-line { width: 24px; }
 }

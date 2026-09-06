@@ -70,6 +70,11 @@
   gap: 2rem;
 }
 
+.recipes-grid > * {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 768px) {
   .recipes-grid { grid-template-columns: 1fr; gap: 1.5rem; }
   .section-header { margin-bottom: 2rem; }

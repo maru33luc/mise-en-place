@@ -2,7 +2,7 @@
   <!-- Imagen con overlay -->
   <div class="card-image">
     <img
-      [src]="getFoodImage(recipe().id)"
+      [src]="getRecipeImage()"
       [alt]="recipe().title"
       loading="lazy"
       (error)="onImgError($event)"
@@ -22,13 +22,16 @@
     <div class="card-ingredients">
       <h4>Ingredientes</h4>
       <ul class="ingredients-list">
-        @for (ing of recipe().ingredients; track $index) {
+        @for (ing of visibleIngredients(); track $index) {
           <li>
             <span class="ingredient-name">{{ ing.name }}</span>
             <span class="ingredient-amount">{{ ing.amount }} {{ ing.unit }}</span>
           </li>
         }
       </ul>
+      @if (hiddenIngredientsCount() > 0) {
+        <span class="ingredients-more">+{{ hiddenIngredientsCount() }} más</span>
+      }
     </div>
   </div>
 

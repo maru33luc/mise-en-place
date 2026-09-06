@@ -1,11 +1,18 @@
 /* ========== CARD — NOIR GOURMET ========== */
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .recipe-card {
-  background: #0c0c0c;
-  border: 1px solid #1a1a1a;
+  background: #0a0a0a;
+  border: 1px solid #161616;
   border-radius: 4px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  flex: 1;
   position: relative;
   transition:
     transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1),
@@ -13,8 +20,8 @@
     border-color 0.45s ease;
   /* Sombra en reposo: profundidad sutil de carta sobre mesa */
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.4),
-    0 8px 24px rgba(0, 0, 0, 0.35);
+    0 2px 4px rgba(0, 0, 0, 0.45),
+    0 10px 32px rgba(0, 0, 0, 0.55);
 }
 
 /* Borde dorado con gradiente que aparece al hover */
@@ -147,11 +154,12 @@
   font-size: 0.875rem;
   line-height: 1.65;
   margin-bottom: 1.25rem;
-  /* Alineación: máximo 2 líneas */
+  /* Máximo 2 líneas + altura mínima fija: alinea el bloque entre cards */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  min-height: 2.9rem;
 }
 
 /* ========== INGREDIENTS ========== */
@@ -176,6 +184,17 @@
   display: grid;
   gap: 0.4rem;
   padding: 0;
+  /* 3 filas fijas: alinea las cajas de ingredientes de card a card */
+  min-height: 7.35rem;
+}
+
+.ingredients-more {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: #c9a96e;
+  opacity: 0.7;
 }
 
 .ingredients-list li {

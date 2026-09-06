@@ -33,30 +33,32 @@
   </header>
 
   <!-- ===== CONTENIDO PRINCIPAL ===== -->
-  <main class="app-shell">
-    <app-alert />
+  <main class="content-band">
+    <div class="app-shell">
+      <app-alert />
 
-    @if (showCreateForm()) {
-      <app-recipe-form
-        (save)="onCreate($event)"
-        (cancelled)="showCreateForm.set(false)"
+      @if (showCreateForm()) {
+        <app-recipe-form
+          (save)="onCreate($event)"
+          (cancelled)="showCreateForm.set(false)"
+        />
+      }
+
+      @if (editingRecipe(); as recipe) {
+        <app-recipe-form
+          [recipe]="recipe"
+          (save)="onUpdate(recipe.id, $event)"
+          (cancelled)="editingRecipe.set(null)"
+        />
+      }
+
+      <app-recipe-list
+        [recipes]="store.recipes()"
+        [loading]="store.loading()"
+        (edit)="editingRecipe.set($event)"
+        (delete)="recipeToDelete.set($event)"
       />
-    }
-
-    @if (editingRecipe(); as recipe) {
-      <app-recipe-form
-        [recipe]="recipe"
-        (save)="onUpdate(recipe.id, $event)"
-        (cancelled)="editingRecipe.set(null)"
-      />
-    }
-
-    <app-recipe-list
-      [recipes]="store.recipes()"
-      [loading]="store.loading()"
-      (edit)="editingRecipe.set($event)"
-      (delete)="recipeToDelete.set($event)"
-    />
+    </div>
   </main>
 
   <!-- ===== FAB ===== -->
