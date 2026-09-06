@@ -1,55 +1,32 @@
-# frontend
+# Frontend
 
-Angular 22 app for mise-en-place — recipe management.
+Angular 22 client for Mise en Place. It uses standalone components, Signals, strict TypeScript, native HTML5 drag and drop, and Vitest.
 
-## Stack
+## Commands
 
-- Angular 22 — standalone components, Signals, control flow
-- TypeScript 6
-- Vitest — unit testing
-- ESLint + angular-eslint
-- pnpm
+```bash
+pnpm install
+pnpm start
+pnpm build
+pnpm test
+pnpm lint
+```
+
+The development server runs on `http://localhost:4200` and calls the API configured in `src/environments/environment.ts`.
+
+## Routes
+
+- `/` public landing page.
+- `/auth/login` and `/auth/register` public authentication screens.
+- `/recipes` protected recipe collection.
+- `/recipes/:id` protected recipe detail and portion view.
+- `/menu` protected daily menu builder and shopping list.
+- `/prep-list` protected preparation tasks and timers.
 
 ## Structure
 
-```
-frontend/src/
-├── app/
-│   ├── app.ts / app.config.ts / app.routes.ts   # Shell + routing
-│   ├── core/                                    # Singleton domain layer
-│   │   ├── models/            # Recipe, Ingredient, Difficulty, ApiResponse
-│   │   ├── services/          # RecipeService (HTTP), RecipesStore (state), ToastService
-│   │   ├── interceptors/      # errorInterceptor
-│   │   └── utils/             # validators
-│   ├── features/recipes/      # Feature module (lazy-loaded)
-│   │   ├── recipe-shell/      # Main shell (header, list, form, dialogs)
-│   │   ├── recipe-list/       # Grid + loading + empty state
-│   │   ├── recipe-card/       # Single recipe view
-│   │   ├── recipe-form/       # Reusable create/edit form
-│   │   ├── ingredient-input/  # Ingredient adder with tags
-│   │   └── recipes.routes.ts
-│   └── shared/                # Reusable presentational components
-│       ├── alert/             # Global toast display
-│       ├── loading/           # Spinner
-│       ├── empty-state/       # Empty list placeholder
-│       └── confirm-dialog/    # Accessible confirmation modal
-└── environments/              # Dev/prod config
-```
+- `core`: models, HTTP services, auth guards and interceptors.
+- `features`: home, auth, recipes, menu and prep list workflows.
+- `shared`: navbar and reusable feedback/presentation components.
 
-## Scripts
-
-```bash
-pnpm install          # Install dependencies
-pnpm start            # Dev server → http://localhost:4200 (proxies /api → :3000)
-pnpm run build        # Production build
-pnpm test             # Unit tests (Vitest)
-pnpm run lint         # ESLint
-pnpm run format       # Format with Prettier
-```
-
-## Architecture decisions
-
-- **State**: `RecipesStore` (Signals) is the single source of truth. Components read signals and call actions.
-- **HTTP**: `RecipeService` is a pure HTTP layer; errors are handled globally by `errorInterceptor` + `ToastService`.
-- **Validation**: Shared validators in `core/utils/validators.ts` used by all forms.
-- **Accessibility**: Labels associated to inputs, `role="alert"` for toasts, `aria-label` for icon buttons, focus management in dialogs.
+The app stores the simulated JWT and user profile in local storage and sends the token through the auth interceptor.

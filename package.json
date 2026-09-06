@@ -1,12 +1,14 @@
 ﻿{
-  "name": "node-prueba",
+  "name": "mise-en-place",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "backend:install": "cd backend && pnpm install",
-    "backend:start": "cd backend && pnpm start",
+    "backend:start": "pnpm --dir backend start",
     "frontend:install": "cd frontend && pnpm install",
-    "frontend:start": "cd frontend && pnpm start",
-    "frontend:build": "cd frontend && pnpm run build"
+    "frontend:start": "pnpm --dir frontend start",
+    "frontend:build": "pnpm --dir frontend build",
+    "frontend:test": "pnpm --dir frontend exec ng test --watch=false",
+    "frontend:lint": "pnpm --dir frontend lint"
   }
 }

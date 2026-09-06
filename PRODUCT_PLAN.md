@@ -1,154 +1,142 @@
-# Mise en Place — Fine Dining Digital Platform · Product Plan
+# Mise en Place Product Plan
 
-> Last updated: 2026-09-06  
-> Status: **Approved & In Progress**
+> Updated: 2026-09-06
+> Status: Phase 1-6 implemented; refinement and production hardening remain.
 
----
+## Product vision
 
-## Decisions Locked
+Mise en Place is a fine-dining kitchen operations platform with a New York Michelin-starred restaurant aesthetic. It coordinates the work behind service: recipes, menu composition, guest scaling, shopping quantities and daily preparation.
+
+## Locked decisions
 
 | Decision | Choice |
-|----------|--------|
-| Database | **In-memory** (no MongoDB for now) |
-| UI Language | **English** |
-| Drag & Drop | **Native HTML5 API** (no CDK) |
+|---|---|
+| Storage | In-memory for the current phase |
+| UI language | English |
+| Drag and drop | Native HTML5 API |
+| Frontend | Angular 22 standalone components, Signals and strict TypeScript |
+| Backend | Node.js, Express, Zod and JWT |
 
----
+## Design system: Noir Gourmet NYC
 
-## Vision
+- Gold: `#c9a96e`, light gold: `#d4b87a`.
+- Void: `#080808`, card: `#111111`.
+- Primary text: `#e8e0d0`, muted text: `#817767`, border: `#1e1e1e`.
+- Display type: Playfair Display. Interface type: Inter.
+- Responsive layouts target small phones, tablets and desktop widths without horizontal overflow.
 
-**Mise en Place** is a luxury fine-dining kitchen management platform with the aesthetic of a New York Michelin-starred restaurant. It solves the real problem of professional culinary planning and service execution — going far beyond a simple recipe CRUD.
+## Implemented product scope
 
----
+### Authentication
 
-## Design System — "Noir Gourmet NYC"
+- `POST /api/auth/register`, `POST /api/auth/login` and authenticated `GET /api/auth/me`.
+- In-memory users with bcrypt password hashing and JWT tokens.
+- Angular auth service, local storage session, bearer interceptor, public guard and protected route guard.
+- Cinematic login and registration screens.
 
-| Token | Value |
-|-------|-------|
-| `--gold` | `#c9a96e` |
-| `--gold-light` | `#d4b87a` |
-| `--bg-void` | `#080808` |
-| `--bg-card` | `#111111` |
-| `--text-primary` | `#e8e0d0` |
-| `--text-muted` | `#666` |
-| `--border` | `#1e1e1e` |
-| `--serif` | Cormorant Garamond / Playfair Display |
-| `--sans` | Inter |
+### Navigation and home
 
----
+- Public home landing page.
+- Fixed, scroll-aware navbar with collection, daily menu and prep list links.
+- Prep list pending-task badge.
+- Responsive layout rules for mobile, tablet and desktop.
 
-## Feature Set
+### Recipe collection
 
-### 1. Auth — Register & Login
-- Full-screen cinematic split layout (visual left / form right)
-- In-memory users with simulated JWT token (localStorage)
-- Guards on protected routes
-- User avatar (initials) in navbar
+- Authenticated recipe CRUD with seed recipes visible to users.
+- User-owned custom recipes isolated by authenticated user id.
+- Recipe detail route with ingredient and portion view.
+- Existing recipe cards, forms, validation, loading, alerts and delete confirmation retained.
+- Recipe model supports `season`, `tags` and `servings` for filtering and scaling work.
 
-### 2. Navbar (Modern Luxury)
-- Fixed, full-width with backdrop-filter: blur(20px)
-- Turns solid with gold bottom border on scroll
-- Links: Home · Recipes · Daily Menu · Prep List · Account
-- Badge counter on Prep List link
-- Mobile hamburger menu with premium animation
+### Prep list
 
-### 3. Prep List (Signature Feature — "Mise en Place")
-- Create daily prep tasks derived from recipes
-- Each task: ingredient, quantity, technique, estimated time, priority, status
-- Integrated per-task timer (stopwatch)
-- Visual progress bar (% of service prep complete)
-- Archive completed prep lists
+- Authenticated task CRUD at `/api/prep-list`.
+- Task name, ingredient, quantity, unit, technique, estimated minutes, priority, notes and status.
+- Progress indicator, per-task stopwatch, status changes and archive completed tasks.
 
-### 4. Daily Menu Builder
-- Drag & drop (native HTML5) to assign recipes to: Starters / Mains / Desserts
-- Guest count input ? auto-scales all ingredient quantities
-- Auto-generates Shopping List from the day's menu
+### Daily menu
 
-### 5. Recipe Scaler
-- Portion input ? all ingredients auto-recalculate
-- Smart unit conversion (g ? kg, ml ? L)
-
-### 6. Tags & Seasons
-- Season tags: Spring / Summer / Fall / Winter
-- Type tags: Protein / Vegetable / Dessert / Sauce
-- Allergen tags: Gluten / Dairy / Nuts / Shellfish
-- Advanced filter + search
-
----
+- Authenticated date-based menu persistence at `/api/menu/:date`.
+- Native drag and drop from recipe library into starters, mains and desserts.
+- Guest count scaling and generated shopping list grouped by ingredient and unit.
 
 ## Routes
 
-```
-/                     ? Home (hero landing)   ? public
-/auth/login           ? Login                 ? public
-/auth/register        ? Register              ? public
-/recipes              ? My Collection         ? protected
-/recipes/:id          ? Recipe Detail         ? protected
-/menu                 ? Daily Menu Builder    ? protected
-/prep-list            ? Prep List             ? protected
+```text
+/                 public home
+/auth/login       public login
+/auth/register    public registration
+/recipes          protected recipe collection
+/recipes/:id      protected recipe detail
+/menu             protected daily menu builder
+/prep-list        protected prep workflow
 ```
 
----
+## API contract
+
+Public endpoints:
+
+- `GET /api/health`
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+
+Protected endpoints require `Authorization: Bearer <token>`:
+
+- `GET /api/auth/me`
+- `GET|POST|PUT|DELETE /api/recipes` and `/api/recipes/:id`
+- `GET /api/menu`, `GET|PUT|DELETE /api/menu/:date`
+- `GET|POST|PUT|DELETE /api/prep-list` and `/api/prep-list/:id`
+- `DELETE /api/prep-list/done`
+
+All state is in memory and is cleared when the backend restarts.
 
 ## Architecture
 
-```
+```text
 frontend/src/app/
-+-- core/
-¦   +-- models/          ? User, Recipe, PrepTask, MenuItem interfaces
-¦   +-- services/        ? AuthService, RecipeService, PrepListService, MenuService
-¦   +-- guards/          ? authGuard, publicGuard
-¦   +-- interceptors/    ? authInterceptor (Bearer token)
-+-- features/
-¦   +-- auth/            ? LoginComponent, RegisterComponent
-¦   +-- recipes/         ? RecipeListComponent, RecipeCardComponent, RecipeFormComponent
-¦   +-- menu/            ? DailyMenuComponent (drag & drop)
-¦   +-- prep-list/       ? PrepListComponent (timer, progress)
-+-- shared/
-    +-- navbar/          ? NavbarComponent (scroll-aware, auth-aware)
+  core/
+    models/          domain contracts
+    services/        auth, recipes, menu, prep list and toast state
+    guards.ts        public and protected route guards
+    interceptors/    bearer auth and error handling
+  features/
+    home/            public entry point
+    auth/            login and registration
+    recipes/         collection, cards, forms and detail
+    menu/            daily menu and shopping list
+    prep-list/       preparation tasks and timers
+  shared/            navbar, alert, confirmation, loading and empty states
+
+backend/
+  controllers/       request handlers
+  middleware/        auth and validation
+  models/            in-memory domain stores
+  routes/            API route registration
+  schemas/           request validation
+  server.js          strict environment configuration and HTTP entry point
 ```
 
----
+## Environment and port policy
 
-## Implementation Phases
+Create `backend/.env` from `backend/.env.example`. `PORT` is mandatory and the server always binds to that exact value. If it is invalid or occupied, startup fails; the server never increments or selects a fallback port.
 
-### Phase 1 — Backend Auth (in-memory users)
-- User model (in-memory store)
-- POST /api/auth/register
-- POST /api/auth/login
-- GET /api/auth/me (with JWT middleware)
-- Add Authorization header support to CORS
+The frontend API URL is configured in `frontend/src/environments/environment.ts` and should match the backend port.
 
-### Phase 2 — Frontend Auth
-- User interface & AuthService (signals)
-- authGuard and publicGuard
-- LoginComponent (cinematic split layout)
-- RegisterComponent
-- authInterceptor for Bearer token
-- Link recipes to logged-in user
+## Quality checks
 
-### Phase 3 — Navbar
-- NavbarComponent standalone
-- Scroll-aware style (transparent ? solid)
-- Auth-aware links (show/hide based on user)
-- Mobile hamburger menu
-- Badge on Prep List link
+```bash
+pnpm frontend:build
+pnpm frontend:test
+pnpm frontend:lint
+```
 
-### Phase 4 — Prep List Feature
-- PrepTask model (in-memory)
-- Backend CRUD for prep tasks
-- PrepListComponent with task cards
-- Per-task stopwatch timer
-- Progress bar
+Current known test coverage is frontend-focused. Backend request checks can be exercised through `backend/app.http` or with the documented API routes.
 
-### Phase 5 — Daily Menu Builder
-- MenuItem model
-- Backend CRUD
-- Drag & drop UI (native HTML5)
-- Guest count ? auto-scale ingredients
-- Shopping list generation
+## Next hardening work
 
-### Phase 6 — Recipe Enhancements
-- Tags (season, type, allergens)
-- Portion scaler
-- Search + filter
+- Add backend integration tests and schema validation for menu and prep payloads.
+- Add recipe search/filter controls and complete smart unit conversion.
+- Persist timer elapsed time on update and derive prep tasks directly from menu recipes.
+- Add an actual mobile navigation drawer and broader keyboard/accessibility coverage.
+- Replace in-memory storage when persistence and multi-instance deployment are required.

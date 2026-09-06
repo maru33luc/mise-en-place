@@ -8,11 +8,15 @@ const menuRoutes = require('./routes/menu');
 const prepListRoutes = require('./routes/prepList');
 const RecipesController = require('./controllers/practicesController');
 
-const BASE_PORT       = parseInt(process.env.PORT, 10)             || 3000;
+const PORT             = Number(process.env.PORT);
 const ALLOWED_ORIGIN  = process.env.ALLOWED_ORIGIN                 || 'http://localhost:4200';
 const RATE_WINDOW_MS  = parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 60_000;
 const RATE_MAX        = parseInt(process.env.RATE_LIMIT_MAX, 10)   || 100;
 const BODY_LIMIT      = process.env.BODY_LIMIT                     || '10kb';
+
+if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65_535) {
+  throw new Error('PORT must be an integer between 1 and 65535 in backend/.env');
+}
 
 const app = express();
 
@@ -51,17 +55,11 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ success: false, message: 'Error interno del servidor' });
 });
 
-function startServer(port) {
-  app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-  }).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      console.log(`Port ${port} in use, trying ${port + 1}...`);
-      startServer(port + 1);
-    } else {
-      throw err;
-    }
-  });
-}
+const server = app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
 
-startServer(BASE_PORT);
+server.on('error', (error) => {
+  console.error(`Unable to bind to configured port ${PORT}.`, error);
+  process.exit(1);
+});

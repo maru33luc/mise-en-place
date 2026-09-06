@@ -1,13 +1,22 @@
-/* ============================================================
-   MISE EN PLACE — Fine Dining Recipe Collection
-   Design: Noir Gourmet (NYC fine dining aesthetic)
-   ============================================================ */
+/* Mise en Place — shared Noir Gourmet tokens and responsive foundation. */
 
 /* === GOOGLE FONTS === */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
 
 /* === RESET & BASE === */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #c9a96e;
+  --gold-light: #d4b87a;
+  --bg-void: #080808;
+  --bg-card: #111111;
+  --text-primary: #e8e0d0;
+  --text-muted: #817767;
+  --border: #1e1e1e;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: Inter, system-ui, sans-serif;
+}
 
 html {
   scroll-behavior: smooth;
@@ -16,11 +25,19 @@ html {
 }
 
 body {
-  background-color: #080808;
-  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-void);
+  font-family: var(--sans);
   color: #d4c9b8;
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+img { max-width: 100%; }
+
+@media (max-width: 640px) {
+  body { font-size: 0.95rem; }
 }
 
 /* === CINEMATIC GRAIN OVERLAY === */

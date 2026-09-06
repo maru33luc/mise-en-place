@@ -1,65 +1,64 @@
-# mise-en-place
+# Mise en Place
 
-A full-stack recipe management app built with Node.js and Angular. Dark, minimal UI inspired by New York fine dining.
+A fine-dining kitchen operations platform for recipes, daily menu planning and service preparation.
 
-## Stack
+## Current stack
 
-- **Frontend** — Angular 21, Signals, Vitest
-- **Backend** — Node.js, Express, Zod
+- Backend: Node.js, Express, Zod, JWT, in-memory storage.
+- Frontend: Angular 22 standalone components, Signals, TypeScript 6 and Vitest.
+- Package manager: pnpm.
+- UI: English, Noir Gourmet NYC design system.
 
-## Project Structure
+## Requirements
 
-```
-mise-en-place/
-├── frontend/   # Angular app
-└── backend/    # Express API
-```
+- Node.js 20 or newer.
+- pnpm 9 or newer.
 
-## Getting Started
+## Setup
 
-**Backend**
+Install dependencies:
+
 ```bash
-cd backend
-npm install
-npm start
-# Running on http://localhost:3000
+pnpm install
+pnpm backend:install
+pnpm frontend:install
 ```
 
-**Frontend**
+Create `backend/.env` from `backend/.env.example` and set `PORT`. The backend always binds to that exact port. It does not move to another port when the configured port is occupied.
+
+Start the services in separate terminals:
+
 ```bash
-cd frontend
-npm install
-ng serve
-# Running on http://localhost:4200
+pnpm backend:start
+pnpm frontend:start
 ```
 
-## API
+The API is available at `http://localhost:<PORT>` and the Angular app at `http://localhost:4200`.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/recipes | Get all recipes |
-| GET | /api/recipes/:id | Get recipe by ID |
-| POST | /api/recipes | Create recipe |
-| PUT | /api/recipes/:id | Update recipe |
-| DELETE | /api/recipes/:id | Delete recipe |
-| GET | /api/health | Health check |
+## Workspace commands
 
-### Recipe Schema
-
-```json
-{
-  "title": "Pasta Carbonara",
-  "description": "Classic Roman pasta dish",
-  "difficulty": "medium",
-  "ingredients": [
-    { "name": "pasta", "amount": 400, "unit": "g" },
-    { "name": "eggs", "amount": 3, "unit": "unit" }
-  ]
-}
+```bash
+pnpm frontend:build
+pnpm frontend:test
+pnpm frontend:lint
 ```
 
-**Validation rules:**
-- `title` — 3 to 100 characters
-- `description` — 5 to 500 characters
-- `difficulty` — `easy` | `medium` | `hard`
-- `ingredients` — at least 1 item, each with `name`, `amount`, and `unit`
+## Product documentation
+
+The complete product definition, implemented features, architecture, routes, API contract and remaining work live in [PRODUCT_PLAN.md](PRODUCT_PLAN.md).
+
+## API overview
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `GET|POST|PUT|DELETE /api/recipes`
+- `GET|PUT|DELETE /api/menu/:date`
+- `GET|POST|PUT|DELETE /api/prep-list`
+- `GET /api/health`
+
+Protected routes require `Authorization: Bearer <token>`.
+
+## Storage
+
+Data is intentionally in memory for the current product phase. Restarting the backend clears users, custom recipes, menus and prep tasks.
