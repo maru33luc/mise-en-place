@@ -16,23 +16,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
+  overflow: hidden;
 }
 
-  /* Difuminado cinematográfico hero → cards */
+  /* Fade cinematográfico inferior: funde la foto exactamente con el fondo */
   .hero::after {
     content: '';
     position: absolute;
-    bottom: -120px;
+    bottom: 0;
     left: 0;
     right: 0;
-    height: 400px;
+    height: 60%;
     background: linear-gradient(
       to bottom,
       transparent 0%,
-      rgba(8, 8, 8, 0.32) 45%,
-      rgba(8, 8, 8, 0.72) 65%,
-      #080808 85%
+      rgba(8, 8, 8, 0.08) 20%,
+      rgba(8, 8, 8, 0.35) 45%,
+      rgba(8, 8, 8, 0.72) 68%,
+      rgba(8, 8, 8, 0.93) 85%,
+      #080808 100%
     );
     pointer-events: none;
     z-index: 3;
@@ -148,27 +150,21 @@
 }
 
 .hero-ornament {
-  font-size: 1.5rem;
-  color: #c9a96e;
-  opacity: 0.6;
-  animation: float 3s ease-in-out infinite;
+  display: none; /* ahora está dentro del scroll-hint */
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
 
 .hero-scroll-hint {
   position: absolute;
-  bottom: 3rem;
+  bottom: 3.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  animation: fadeIn 1.5s ease-out 1s both;
+  gap: 0.6rem;
+  z-index: 4;
+  animation: fadeIn 1.5s ease-out 1.4s both;
 }
 
 @keyframes fadeIn {
@@ -176,30 +172,46 @@
   to { opacity: 1; }
 }
 
-.hero-scroll-hint span {
-  font-size: 0.65rem;
-  letter-spacing: 0.3em;
+.scroll-ornament {
+  font-size: 1rem;
+  color: #c9a96e;
+  opacity: 0.7;
+  animation: floatSmall 3s ease-in-out infinite;
+  line-height: 1;
+}
+
+@keyframes floatSmall {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50% { transform: translateY(-4px); opacity: 1; }
+}
+
+.scroll-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: rgba(212, 201, 184, 0.5);
+  color: rgba(212, 201, 184, 0.45);
 }
 
 .scroll-line {
   width: 1px;
-  height: 40px;
-  background: linear-gradient(180deg, #c9a96e, transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
+  height: 44px;
+  background: linear-gradient(180deg, rgba(201, 169, 110, 0.7), transparent);
+  animation: scrollPulse 2.2s ease-in-out infinite;
+  transform-origin: top center;
 }
 
 @keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
-  50% { opacity: 1; transform: scaleY(1); }
+  0%   { opacity: 0.3; transform: scaleY(0.4); }
+  55%  { opacity: 1;   transform: scaleY(1); }
+  100% { opacity: 0;   transform: scaleY(1.1) translateY(6px); }
 }
 
 /* ========== CONTENT BAND ========== */
   /* Fondo liso #080808: sin overlays ni halos que rompan la profundidad de las sombras */
   .content-band {
     background: #080808;
-    padding: 2rem 0 7rem;
+    padding: 0 0 7rem;
   }
 
 .app-shell {
