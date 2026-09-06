@@ -39,7 +39,7 @@ describe('RecipeCardComponent', () => {
 
   it('debe mostrar el badge de dificultad', () => {
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('.card-badge')?.textContent?.trim()).toBe('Media');
+    expect(el.querySelector('.card-badge')?.textContent?.trim()).toBe('Medium');
   });
 
   it('debe mostrar la imagen de la receta', () => {

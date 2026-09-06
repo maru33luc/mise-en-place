@@ -10,8 +10,8 @@ import { Component, EventEmitter, Output, input } from '@angular/core';
         <h2 [attr.id]="'dialog-title-' + id">{{ title() }}</h2>
         <p>{{ message() }}</p>
         <div class="dialog-actions">
-          <button type="button" class="secondary-button" (click)="cancel()">Cancelar</button>
-          <button type="button" class="danger-button" (click)="confirm()">Eliminar</button>
+          <button type="button" class="secondary-button" (click)="cancel()">Cancel</button>
+          <button type="button" class="danger-button" (click)="confirm()">Delete</button>
         </div>
       </div>
     </div>
@@ -104,8 +104,8 @@ import { Component, EventEmitter, Output, input } from '@angular/core';
 })
 export class ConfirmDialogComponent {
   readonly id = input.required<string>();
-  readonly title = input('¿Confirmas eliminar?');
-  readonly message = input('Esta acción no se puede deshacer.');
+  readonly title = input('Confirm deletion?');
+  readonly message = input('This action cannot be undone.');
 
   @Output() confirmed = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();

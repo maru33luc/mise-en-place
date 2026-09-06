@@ -1,12 +1,12 @@
 <section class="recipes-section">
   <div class="section-header">
     <div class="header-left">
-      <span class="section-label">Colección</span>
-      <h2 class="section-title">Mis Recetas</h2>
+      <span class="section-label">Collection</span>
+      <h2 class="section-title">My Recipes</h2>
     </div>
     <div class="recipe-count">
       <span class="count-number">{{ recipes().length }}</span>
-      <span class="count-label">{{ recipes().length === 1 ? 'receta' : 'recetas' }}</span>
+      <span class="count-label">{{ recipes().length === 1 ? 'recipe' : 'recipes' }}</span>
     </div>
   </div>
 
@@ -24,8 +24,8 @@
     </div>
   } @else if (!loading()) {
     <app-empty-state
-      title="No hay recetas aún"
-      message="Crea tu primera receta haciendo clic en el botón + arriba"
+      title="No recipes yet"
+      message="Create your first recipe with the + button above"
     />
   }
 </section>

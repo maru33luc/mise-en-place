@@ -12,7 +12,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err: unknown) => {
-      let message = 'Error inesperado';
+      let message = 'Unexpected error';
 
       if (err instanceof HttpErrorResponse) {
         const body = err.error as { errors?: { message: string }[]; message?: string };
@@ -21,7 +21,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         } else if (body?.message) {
           message = body.message;
         } else if (err.status === 0) {
-          message = 'No se pudo conectar con el servidor';
+          message = 'Could not connect to the server';
         }
       }
 

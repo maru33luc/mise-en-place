@@ -25,9 +25,9 @@ export type RecipePayload = Omit<Recipe, 'id'>;
 
 /** Presentación de cada dificultad: etiqueta legible + clase de badge. */
 export const DIFFICULTY_CONFIG: Record<Difficulty, { label: string; badge: string }> = {
-  easy: { label: 'Fácil', badge: 'badge-easy' },
-  medium: { label: 'Media', badge: 'badge-medium' },
-  hard: { label: 'Difícil', badge: 'badge-hard' },
+  easy: { label: 'Easy', badge: 'badge-easy' },
+  medium: { label: 'Medium', badge: 'badge-medium' },
+  hard: { label: 'Hard', badge: 'badge-hard' },
 };
 
 export const DIFFICULTIES = Object.keys(DIFFICULTY_CONFIG) as Difficulty[];

@@ -35,7 +35,7 @@ app.use('/api/', rateLimit({
   max: RATE_MAX,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { success: false, message: 'Demasiadas solicitudes, intenta más tarde' }
+  message: { success: false, message: 'Too many requests, try again later' }
 }));
 
 app.use(express.json({ limit: BODY_LIMIT }));
@@ -47,12 +47,12 @@ app.use('/api/prep-list', prepListRoutes);
 app.get('/api/health', RecipesController.health);
 
 app.use((_req, res) => {
-  res.status(404).json({ success: false, message: 'Ruta no encontrada' });
+  res.status(404).json({ success: false, message: 'Route not found' });
 });
 
 app.use((err, _req, res, _next) => {
   console.error(err);
-  res.status(500).json({ success: false, message: 'Error interno del servidor' });
+  res.status(500).json({ success: false, message: 'Internal server error' });
 });
 
 const server = app.listen(PORT, () => {

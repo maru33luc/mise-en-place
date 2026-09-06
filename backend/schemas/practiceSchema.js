@@ -4,17 +4,17 @@ const numericStringRegex = /^\d+(\.\d+)?$/;
 
 const strictString = (field) =>
   z.string({
-    required_error: `${field} es requerido`,
+    required_error: `${field} is required`,
     invalid_type_error: `${field} debe ser texto`
   }).refine(val => isNaN(Number(val)) || val.trim() === '', {
-    message: `${field} no puede ser solo un número`
+    message: `${field} cannot contain only numbers`
   });
 
 const strictNumber = (field) =>
   z.union([
-    z.number({ invalid_type_error: `${field} debe ser un número` }),
-    z.string().regex(numericStringRegex, `${field} debe ser un número válido`).transform(Number)
-  ], { errorMap: () => ({ message: `${field} debe ser un número` }) });
+    z.number({ invalid_type_error: `${field} must be a number` }),
+    z.string().regex(numericStringRegex, `${field} must be a valid number`).transform(Number)
+  ], { errorMap: () => ({ message: `${field} must be a number` }) });
 
 const ingredientSchema = z.object({
   name: strictString('Nombre del ingrediente')
@@ -22,16 +22,16 @@ const ingredientSchema = z.object({
   amount: strictNumber('Cantidad')
     .refine(n => n > 0, 'Cantidad debe ser positiva'),
   unit: z.string({ invalid_type_error: 'Unidad debe ser texto' })
-    .min(1, 'Unidad requerida')
+    .min(1, 'Unit is required')
 });
 
 const createRecipeSchema = z.object({
-  title: strictString('Título')
-    .min(3, 'Título debe tener al menos 3 caracteres')
-    .max(100, 'Título no puede superar 100 caracteres'),
-  description: strictString('Descripción')
-    .min(5, 'Descripción debe tener al menos 5 caracteres')
-    .max(500, 'Descripción no puede superar 500 caracteres'),
+  title: strictString('Title')
+    .min(3, 'Title must be at least 3 characters')
+    .max(100, 'Title cannot exceed 100 characters'),
+  description: strictString('Description')
+    .min(5, 'Description must be at least 5 characters')
+    .max(500, 'Description cannot exceed 500 characters'),
   difficulty: z.enum(['easy', 'medium', 'hard'], {
     errorMap: () => ({ message: 'Dificultad debe ser: easy, medium o hard' })
   }),

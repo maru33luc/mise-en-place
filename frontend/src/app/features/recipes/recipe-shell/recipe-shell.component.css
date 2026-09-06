@@ -8,6 +8,11 @@
   background: #080808;
 }
 
+.recipe-form-anchor {
+  display: block;
+  scroll-margin: 96px 0 32px;
+}
+
 /* ========== HERO CINEMATOGRÁFICO ========== */
 .hero {
   position: relative;

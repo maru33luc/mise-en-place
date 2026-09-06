@@ -4,11 +4,11 @@ import { Component } from '@angular/core';
   selector: 'app-loading',
   standalone: true,
   template: `
-    <div class="loading" role="status" aria-label="Cargando contenido">
+    <div class="loading" role="status" aria-label="Loading content">
       <div class="spinner-ring" aria-hidden="true">
         <div class="spinner-inner"></div>
       </div>
-      <p class="loading-label">Preparando la mesa</p>
+      <p class="loading-label">Preparing the table</p>
     </div>
   `,
   styles: `

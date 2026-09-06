@@ -1,5 +1,5 @@
 <div class="page-wrapper">
-  <!-- ===== HERO CINEMATOGRÁFICO ===== -->
+  <!-- ===== CINEMATIC HERO ===== -->
   <header class="hero">
     <div class="hero-backdrop">
       <img
@@ -32,30 +32,34 @@
     </div>
   </header>
 
-  <!-- ===== CONTENIDO PRINCIPAL ===== -->
+  <!-- ===== MAIN CONTENT ===== -->
   <main class="content-band">
     <div class="app-shell">
       <app-alert />
 
       @if (showCreateForm()) {
-        <app-recipe-form
-          (save)="onCreate($event)"
-          (cancelled)="showCreateForm.set(false)"
-        />
+        <div id="recipe-form" class="recipe-form-anchor">
+          <app-recipe-form
+            (save)="onCreate($event)"
+            (cancelled)="showCreateForm.set(false)"
+          />
+        </div>
       }
 
       @if (editingRecipe(); as recipe) {
-        <app-recipe-form
-          [recipe]="recipe"
-          (save)="onUpdate(recipe.id, $event)"
-          (cancelled)="editingRecipe.set(null)"
-        />
+        <div id="recipe-form" class="recipe-form-anchor">
+          <app-recipe-form
+            [recipe]="recipe"
+            (save)="onUpdate(recipe.id, $event)"
+            (cancelled)="editingRecipe.set(null)"
+          />
+        </div>
       }
 
       <app-recipe-list
         [recipes]="store.recipes()"
         [loading]="store.loading()"
-        (edit)="editingRecipe.set($event)"
+        (edit)="openEditForm($event)"
         (delete)="recipeToDelete.set($event)"
       />
     </div>
@@ -66,9 +70,9 @@
     <button
       type="button"
       class="fab-button"
-      (click)="showCreateForm.set(true)"
+      (click)="openCreateForm()"
       [disabled]="store.loading()"
-      aria-label="Crear nueva receta"
+      aria-label="Create new recipe"
     >
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -81,8 +85,8 @@
   @if (recipeToDelete(); as target) {
     <app-confirm-dialog
       id="delete-recipe"
-      title="¿Eliminar receta?"
-      [message]="'Se eliminará &quot;' + target.title + '&quot; para siempre.'"
+      title="Delete recipe?"
+      [message]="'&quot;' + target.title + '&quot; will be deleted permanently.'"
       (confirmed)="confirmDelete()"
       (cancelled)="recipeToDelete.set(null)"
     />

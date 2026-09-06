@@ -11,37 +11,37 @@ export function isNumericOnly(value: string): boolean {
 }
 
 export function validateTitle(value: string): string | null {
-  if (!value.trim()) return 'El título es requerido';
-  if (isNumericOnly(value)) return 'El título no puede ser solo un número';
+  if (!value.trim()) return 'Title is required';
+  if (isNumericOnly(value)) return 'Title cannot contain only numbers';
   return null;
 }
 
 export function validateDescription(value: string): string | null {
-  if (!value.trim()) return 'La descripción es requerida';
-  if (isNumericOnly(value)) return 'La descripción no puede ser solo un número';
+  if (!value.trim()) return 'Description is required';
+  if (isNumericOnly(value)) return 'Description cannot contain only numbers';
   return null;
 }
 
 export function validateIngredientName(value: string): string | null {
-  if (!value.trim()) return 'El nombre del ingrediente es requerido';
-  if (isNumericOnly(value)) return 'El nombre del ingrediente no puede ser solo un número';
+  if (!value.trim()) return 'Ingredient name is required';
+  if (isNumericOnly(value)) return 'Ingredient name cannot contain only numbers';
   return null;
 }
 
 export function validateIngredientAmount(value: string): string | null {
   const amount = parseFloat(value);
-  if (!value.trim() || isNaN(amount) || amount <= 0) return 'La cantidad debe ser un número positivo';
+  if (!value.trim() || isNaN(amount) || amount <= 0) return 'Amount must be a positive number';
   return null;
 }
 
 export function validateIngredientUnit(value: string): string | null {
-  if (!value.trim()) return 'La unidad es requerida';
-  if (isNumericOnly(value)) return 'La unidad no puede ser solo un número';
+  if (!value.trim()) return 'Unit is required';
+  if (isNumericOnly(value)) return 'Unit cannot contain only numbers';
   return null;
 }
 
 /** Al menos 1 ingrediente completo es obligatorio. */
 export function validateIngredients(ingredients: Ingredient[]): string | null {
-  if (ingredients.length === 0) return 'Agrega al menos 1 ingrediente';
+  if (ingredients.length === 0) return 'Add at least one ingredient';
   return null;
 }

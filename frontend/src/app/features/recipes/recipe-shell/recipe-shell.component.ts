@@ -21,6 +21,25 @@ export class RecipeShellComponent implements OnInit {
     this.store.load();
   }
 
+  protected openCreateForm(): void {
+    this.showCreateForm.set(true);
+    this.editingRecipe.set(null);
+    this.scrollToRecipeForm();
+  }
+
+  protected openEditForm(recipe: Recipe): void {
+    this.showCreateForm.set(false);
+    this.editingRecipe.set(recipe);
+    this.scrollToRecipeForm();
+  }
+
+  private scrollToRecipeForm(): void {
+    setTimeout(() => {
+      document.getElementById('recipe-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('form-title')?.focus();
+    });
+  }
+
   protected readonly showCreateForm = signal(false);
   protected readonly editingRecipe = signal<Recipe | null>(null);
   protected readonly recipeToDelete = signal<Recipe | null>(null);

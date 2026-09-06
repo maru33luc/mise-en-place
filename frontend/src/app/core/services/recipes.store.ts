@@ -56,7 +56,7 @@ export class RecipesStore {
           if (!res.success || !res.data) return;
           // Actualizamos el estado en memoria: sin refetch completo.
           this.recipesSignal.update((list) => [res.data!, ...list]);
-          this.toast.success('¡Receta creada exitosamente!');
+          this.toast.success('Recipe created successfully');
         },
       });
   }
@@ -73,7 +73,7 @@ export class RecipesStore {
         next: (res) => {
           if (!res.success || !res.data) return;
           this.recipesSignal.update((list) => list.map((r) => (r.id === id ? res.data! : r)));
-          this.toast.success('Receta actualizada');
+          this.toast.success('Recipe updated');
         },
       });
   }
@@ -90,7 +90,7 @@ export class RecipesStore {
         next: (res) => {
           if (!res.success) return;
           this.recipesSignal.update((list) => list.filter((r) => r.id !== id));
-          this.toast.success('Receta eliminada');
+          this.toast.success('Recipe deleted');
         },
       });
   }

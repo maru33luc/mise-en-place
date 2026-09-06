@@ -9,37 +9,37 @@ import {
 
 describe('validators', () => {
   describe('validateTitle', () => {
-    it('rechaza vacío', () => expect(validateTitle('')).toBe('El título es requerido'));
-    it('rechaza solo números', () => expect(validateTitle('123')).toBe('El título no puede ser solo un número'));
+    it('rejects empty values', () => expect(validateTitle('')).toBe('Title is required'));
+    it('rejects numeric-only values', () => expect(validateTitle('123')).toBe('Title cannot contain only numbers'));
     it('acepta texto normal', () => expect(validateTitle('Carbonara')).toBeNull());
   });
 
   describe('validateDescription', () => {
-    it('rechaza vacío', () => expect(validateDescription('')).toBe('La descripción es requerida'));
-    it('acepta texto', () => expect(validateDescription('Una rica receta')).toBeNull());
+    it('rejects empty values', () => expect(validateDescription('')).toBe('Description is required'));
+    it('accepts text', () => expect(validateDescription('A rich recipe')).toBeNull());
   });
 
   describe('validateIngredientName', () => {
-    it('rechaza vacío', () => expect(validateIngredientName('')).toBe('El nombre del ingrediente es requerido'));
-    it('rechaza numérico', () => expect(validateIngredientName('42')).toBe('El nombre del ingrediente no puede ser solo un número'));
-    it('acepta nombre', () => expect(validateIngredientName('pasta')).toBeNull());
+    it('rejects empty values', () => expect(validateIngredientName('')).toBe('Ingredient name is required'));
+    it('rejects numeric-only values', () => expect(validateIngredientName('42')).toBe('Ingredient name cannot contain only numbers'));
+    it('accepts names', () => expect(validateIngredientName('pasta')).toBeNull());
   });
 
   describe('validateIngredientAmount', () => {
-    it('rechaza vacío/null', () => expect(validateIngredientAmount('')).toBe('La cantidad debe ser un número positivo'));
-    it('rechaza <=0', () => expect(validateIngredientAmount('0')).toBe('La cantidad debe ser un número positivo'));
-    it('acepta decimal', () => expect(validateIngredientAmount('1.5')).toBeNull());
+    it('rejects empty values', () => expect(validateIngredientAmount('')).toBe('Amount must be a positive number'));
+    it('rejects <=0', () => expect(validateIngredientAmount('0')).toBe('Amount must be a positive number'));
+    it('accepts decimals', () => expect(validateIngredientAmount('1.5')).toBeNull());
   });
 
   describe('validateIngredientUnit', () => {
-    it('rechaza vacío', () => expect(validateIngredientUnit('')).toBe('La unidad es requerida'));
-    it('rechaza numérico', () => expect(validateIngredientUnit('7')).toBe('La unidad no puede ser solo un número'));
-    it('acepta unidad', () => expect(validateIngredientUnit('g')).toBeNull());
+    it('rejects empty values', () => expect(validateIngredientUnit('')).toBe('Unit is required'));
+    it('rejects numeric-only values', () => expect(validateIngredientUnit('7')).toBe('Unit cannot contain only numbers'));
+    it('accepts units', () => expect(validateIngredientUnit('g')).toBeNull());
   });
 
   describe('validateIngredients', () => {
-    it('rechaza vacío', () => expect(validateIngredients([])).toBe('Agrega al menos 1 ingrediente'));
-    it('acepta con al menos 1', () =>
+    it('rejects empty lists', () => expect(validateIngredients([])).toBe('Add at least one ingredient'));
+    it('accepts at least one ingredient', () =>
       expect(validateIngredients([{ name: 'a', amount: 1, unit: 'g' }])).toBeNull());
   });
 });

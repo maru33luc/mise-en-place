@@ -17,31 +17,31 @@ import { ToastService } from '@core/services/toast.service';
   template: `
     <section class="card form-card">
       <div class="card-header">
-        <span class="form-label">{{ isEdit ? 'Editar' : 'Nueva Creación' }}</span>
-        <h2>{{ isEdit ? 'Editar Receta' : 'Nueva Receta' }}</h2>
+        <span class="form-label">{{ isEdit ? 'Edit' : 'New Creation' }}</span>
+        <h2>{{ isEdit ? 'Edit Recipe' : 'New Recipe' }}</h2>
       </div>
 
       <form class="recipe-form" (ngSubmit)="onSubmit()">
         <div class="form-group">
-          <label for="form-title">Título</label>
+          <label for="form-title">Title</label>
           <input
             type="text"
             [(ngModel)]="title"
             name="title"
             id="form-title"
-            placeholder="Ej. Pasta Carbonara"
+            placeholder="e.g. Pasta Carbonara"
             class="text-input"
             required
           />
         </div>
 
         <div class="form-group">
-          <label for="form-description">Descripción</label>
+          <label for="form-description">Description</label>
           <textarea
             [(ngModel)]="description"
             name="description"
             id="form-description"
-            placeholder="Describe tu receta..."
+            placeholder="Describe your recipe..."
             class="text-input"
             rows="3"
             required
@@ -49,7 +49,7 @@ import { ToastService } from '@core/services/toast.service';
         </div>
 
         <div class="form-group">
-          <label for="form-difficulty">Dificultad</label>
+          <label for="form-difficulty">Difficulty</label>
           <select [(ngModel)]="difficulty" name="difficulty" id="form-difficulty" class="text-input">
             @for (d of DIFFICULTIES; track d) {
               <option [value]="d">{{ DIFFICULTY_CONFIG[d].label }}</option>
@@ -58,15 +58,15 @@ import { ToastService } from '@core/services/toast.service';
         </div>
 
         <div class="form-group">
-          <label [attr.for]="'ing-name-' + ingredientInputId">Ingredientes</label>
+          <label [attr.for]="'ing-name-' + ingredientInputId">Ingredients</label>
           <app-ingredient-input [id]="ingredientInputId" [(ingredients)]="ingredients" />
         </div>
 
         <div class="form-actions">
           <button type="submit" class="primary-button">
-            {{ isEdit ? 'Guardar Cambios' : 'Crear Receta' }}
+            {{ isEdit ? 'Save Changes' : 'Create Recipe' }}
           </button>
-          <button type="button" class="secondary-button" (click)="onCancel()">Cancelar</button>
+          <button type="button" class="secondary-button" (click)="onCancel()">Cancel</button>
         </div>
       </form>
     </section>
@@ -166,7 +166,16 @@ import { ToastService } from '@core/services/toast.service';
     .primary-button:disabled { opacity: 0.4; cursor: not-allowed; }
     .secondary-button { background: transparent; color: #8a8070; border: 1px solid #2a2a2a; }
     .secondary-button:hover:not(:disabled) { border-color: #555; color: #f0e6d2; }
-    @media (max-width: 768px) { .card { padding: 1.75rem; } }
+    @media (max-width: 768px) {
+      .card { padding: 1rem; margin-bottom: 1rem; }
+      .card-header { margin-bottom: 1rem; padding-bottom: .8rem; }
+      .recipe-form { gap: .8rem; }
+      .form-group { gap: .35rem; }
+      .text-input, select, textarea { padding: .65rem .75rem; }
+      textarea { min-height: 64px; }
+      .form-actions { gap: .6rem; margin-top: .25rem; }
+      .primary-button, .secondary-button { padding: .75rem .8rem; }
+    }
     `,
   ],
 })

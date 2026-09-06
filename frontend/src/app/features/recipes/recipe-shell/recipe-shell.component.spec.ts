@@ -44,6 +44,6 @@ describe('RecipeShellComponent', () => {
 
     const fab = fixture.nativeElement.querySelector('.fab-button');
     expect(fab).toBeTruthy();
-    expect(fab?.getAttribute('aria-label')).toBe('Crear nueva receta');
+    expect(fab?.getAttribute('aria-label')).toBe('Create new recipe');
   });
 });

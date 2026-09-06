@@ -9,7 +9,7 @@ import { ToastService } from '@core/services/toast.service';
       <div class="alert" [class.alert-error]="t.kind === 'error'" [class.alert-success]="t.kind === 'success'" role="alert" aria-live="assertive">
         <div class="alert-indicator"></div>
         <span class="alert-message">{{ t.kind === 'success' ? '✓' : '⚠' }} {{ t.message }}</span>
-        <button type="button" class="close-btn" (click)="toastService.dismiss()" aria-label="Cerrar aviso">✕</button>
+        <button type="button" class="close-btn" (click)="toastService.dismiss()" aria-label="Dismiss alert">✕</button>
       </div>
     }
   `,

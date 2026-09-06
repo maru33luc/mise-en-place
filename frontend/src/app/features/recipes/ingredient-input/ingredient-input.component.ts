@@ -18,7 +18,7 @@ import type { Ingredient } from '@core/models/recipe.model';
         [(ngModel)]="name"
         name="ing-name-{{ id() }}"
         [id]="'ing-name-' + id()"
-        placeholder="Nombre"
+        placeholder="Name"
         class="text-input"
       />
       <input
@@ -26,7 +26,7 @@ import type { Ingredient } from '@core/models/recipe.model';
         [(ngModel)]="amount"
         name="ing-amt-{{ id() }}"
         [id]="'ing-amt-' + id()"
-        placeholder="Cantidad"
+        placeholder="Amount"
         class="text-input"
         step="0.1"
       />
@@ -35,11 +35,11 @@ import type { Ingredient } from '@core/models/recipe.model';
         [(ngModel)]="unit"
         name="ing-unit-{{ id() }}"
         [id]="'ing-unit-' + id()"
-        placeholder="Unidad"
+        placeholder="Unit"
         class="text-input"
       />
       <button type="button" class="secondary-button" (click)="add()" [disabled]="!canAdd()">
-        Agregar
+        Add
       </button>
     </div>
 
@@ -48,7 +48,7 @@ import type { Ingredient } from '@core/models/recipe.model';
         @for (ing of ingredients(); track $index) {
           <div class="ingredient-tag">
             <span>{{ ing.name }} - {{ ing.amount }} {{ ing.unit }}</span>
-            <button type="button" (click)="remove($index)" class="tag-close" [attr.aria-label]="'Quitar ' + ing.name">×</button>
+            <button type="button" (click)="remove($index)" class="tag-close" [attr.aria-label]="'Remove ' + ing.name">×</button>
           </div>
         }
       </div>
