@@ -5,7 +5,7 @@ import { Component, input } from '@angular/core';
   standalone: true,
   template: `
     <div class="empty-state">
-      <div class="empty-icon" aria-hidden="true">🍽️</div>
+      <div class="empty-ornament">~</div>
       <h3>{{ title() }}</h3>
       <p>{{ message() }}</p>
     </div>
@@ -17,25 +17,25 @@ import { Component, input } from '@angular/core';
       align-items: center;
       padding: 5rem 2rem;
       text-align: center;
-      border: 1px dashed #1e1e1e;
-      border-radius: 2px;
     }
-    .empty-icon {
-      font-size: 3rem;
-      margin-bottom: 1.5rem;
+    .empty-ornament {
+      font-size: 2.5rem;
+      color: #c9a96e;
       opacity: 0.4;
+      margin-bottom: 1.5rem;
     }
     .empty-state h3 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
-      color: #444;
-      margin-bottom: 0.5rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: #555;
+      margin-bottom: 0.75rem;
       font-weight: 400;
     }
     .empty-state p {
-      color: #333;
-      font-size: 0.85rem;
+      color: #444;
+      font-size: 0.9rem;
       letter-spacing: 0.05em;
+      max-width: 300px;
     }
   `,
 })

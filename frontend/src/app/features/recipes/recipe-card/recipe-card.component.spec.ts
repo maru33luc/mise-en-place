@@ -16,6 +16,7 @@ describe('RecipeCardComponent', () => {
   };
 
   beforeEach(async () => {
+    TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
       imports: [RecipeCardComponent],
     }).compileComponents();
@@ -32,25 +33,32 @@ describe('RecipeCardComponent', () => {
 
   it('debe mostrar el titulo y descripcion', () => {
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('h3')?.textContent).toContain('Pasta Carbonara');
-    expect(el.querySelector('.recipe-description')?.textContent).toContain('Pasta clasica');
+    expect(el.querySelector('.card-title')?.textContent).toContain('Pasta Carbonara');
+    expect(el.querySelector('.card-description')?.textContent).toContain('Pasta clasica');
   });
 
   it('debe mostrar el badge de dificultad', () => {
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('.recipe-badge')?.textContent?.trim()).toBe('Media');
+    expect(el.querySelector('.card-badge')?.textContent?.trim()).toBe('Media');
+  });
+
+  it('debe mostrar la imagen de la receta', () => {
+    const el = fixture.nativeElement as HTMLElement;
+    const img = el.querySelector('.card-image img') as HTMLImageElement;
+    expect(img).toBeTruthy();
+    expect(img.alt).toBe('Pasta Carbonara');
   });
 
   it('debe emitir edit al hacer clic en Editar', () => {
     const spy = vi.spyOn(component.edit, 'emit');
-    const btn = fixture.nativeElement.querySelector('.edit-button') as HTMLButtonElement;
+    const btn = fixture.nativeElement.querySelector('.edit-btn') as HTMLButtonElement;
     btn.click();
     expect(spy).toHaveBeenCalledWith(mockRecipe);
   });
 
   it('debe emitir delete al hacer clic en Eliminar', () => {
     const spy = vi.spyOn(component.delete, 'emit');
-    const btn = fixture.nativeElement.querySelector('.delete-button') as HTMLButtonElement;
+    const btn = fixture.nativeElement.querySelector('.delete-btn') as HTMLButtonElement;
     btn.click();
     expect(spy).toHaveBeenCalledWith(mockRecipe);
   });

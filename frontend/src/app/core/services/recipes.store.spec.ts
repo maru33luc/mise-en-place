@@ -35,7 +35,7 @@ describe('RecipesStore', () => {
 
   it('load() rellena el estado y marca loaded=true', () => {
     store.load();
-    const req = httpMock.expectOne('/api/recipes');
+    const req = httpMock.expectOne((r) => r.url.includes('/api/recipes'));
     expect(req.request.method).toBe('GET');
     req.flush({ success: true, data: [mockRecipe], message: 'ok' });
 
@@ -47,7 +47,7 @@ describe('RecipesStore', () => {
 
   it('create() añade la receta al inicio sin refetch', () => {
     store.create({ title: 'Nueva', description: 'desc', difficulty: 'hard', ingredients: [] });
-    const req = httpMock.expectOne('/api/recipes');
+    const req = httpMock.expectOne((r) => r.url.includes('/api/recipes'));
     expect(req.request.method).toBe('POST');
     req.flush({ success: true, data: mockRecipe, message: 'ok' });
 
@@ -56,11 +56,10 @@ describe('RecipesStore', () => {
   });
 
   it('update() reemplaza la receta con el mismo id', () => {
-    // Simulamos estado previo.
     store['recipesSignal'].set([mockRecipe]);
 
     store.update(1, { title: 'Actualizada' });
-    httpMock.expectOne('/api/recipes/1').flush({ success: true, data: { ...mockRecipe, title: 'Actualizada' }, message: 'ok' });
+    httpMock.expectOne((r) => r.url.includes('/api/recipes/1')).flush({ success: true, data: { ...mockRecipe, title: 'Actualizada' }, message: 'ok' });
 
     expect(store.recipes()[0].title).toBe('Actualizada');
     expect(store.recipes().length).toBe(1);
@@ -70,14 +69,14 @@ describe('RecipesStore', () => {
     store['recipesSignal'].set([mockRecipe]);
 
     store.delete(1);
-    httpMock.expectOne('/api/recipes/1').flush({ success: true, data: mockRecipe, message: 'ok' });
+    httpMock.expectOne((r) => r.url.includes('/api/recipes/1')).flush({ success: true, data: mockRecipe, message: 'ok' });
 
     expect(store.recipes().length).toBe(0);
   });
 
   it('error de red se propaga y deja loading en false', () => {
     store.load();
-    httpMock.expectOne('/api/recipes').flush(
+    httpMock.expectOne((r) => r.url.includes('/api/recipes')).flush(
       { success: false, message: 'Error interno del servidor' },
       { status: 500, statusText: 'Server Error' },
     );

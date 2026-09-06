@@ -15,6 +15,7 @@ describe('IngredientInputComponent', () => {
   }
 
   beforeEach(async () => {
+    TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
       imports: [IngredientInputComponent],
     }).compileComponents();

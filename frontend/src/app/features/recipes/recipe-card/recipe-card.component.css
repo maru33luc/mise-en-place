@@ -1,0 +1,198 @@
+.recipe-card {
+  background: #0c0c0c;
+  border: 1px solid #1a1a1a;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+}
+
+.recipe-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent 40%, rgba(201, 169, 110, 0.15) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.recipe-card:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(201, 169, 110, 0.05);
+  border-color: #2a2418;
+}
+
+.recipe-card:hover::before {
+  opacity: 1;
+}
+
+/* ========== IMAGE ========== */
+.card-image {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.8) brightness(0.7);
+  transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.recipe-card:hover .card-image img {
+  transform: scale(1.08);
+  filter: saturate(1) brightness(0.85);
+}
+
+.card-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 40%,
+    rgba(8, 8, 8, 0.4) 70%,
+    rgba(8, 8, 8, 0.95) 100%
+  );
+}
+
+.card-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 2px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  backdrop-filter: blur(8px);
+  z-index: 2;
+}
+
+.badge-easy { background: rgba(10, 31, 10, 0.8); color: #5c9c5c; border: 1px solid rgba(31, 61, 31, 0.5); }
+.badge-medium { background: rgba(31, 24, 0, 0.8); color: #b8960c; border: 1px solid rgba(61, 48, 0, 0.5); }
+.badge-hard { background: rgba(31, 10, 10, 0.8); color: #c05050; border: 1px solid rgba(61, 21, 21, 0.5); }
+
+/* ========== BODY ========== */
+.card-body {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #f0e6d2;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.card-description {
+  color: #8a8070;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+  flex: 1;
+}
+
+/* ========== INGREDIENTS ========== */
+.card-ingredients {
+  border-top: 1px solid #1a1a1a;
+  padding-top: 1rem;
+}
+
+.card-ingredients h4 {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #c9a96e;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.ingredients-list {
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+  padding: 0;
+}
+
+.ingredients-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: #080808;
+  border-left: 2px solid #1e1c18;
+  font-size: 0.825rem;
+  transition: all 0.3s ease;
+}
+
+.ingredients-list li:hover {
+  border-left-color: #c9a96e;
+  background: #0a0a0a;
+}
+
+.ingredient-name { color: #b8b0a0; font-weight: 400; }
+
+.ingredient-amount {
+  color: #666;
+  font-size: 0.75rem;
+  background: #111;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+}
+
+/* ========== ACTIONS ========== */
+.card-actions {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid #1a1a1a;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.edit-btn { color: #c9a96e; }
+.edit-btn:hover { background: rgba(201, 169, 110, 0.08); }
+
+.delete-btn { color: #884040; border-left: 1px solid #1a1a1a; }
+.delete-btn:hover { background: rgba(180, 60, 60, 0.08); }
+
+@media (max-width: 768px) {
+  .card-image { height: 180px; }
+  .card-body { padding: 1.25rem; }
+}

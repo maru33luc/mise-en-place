@@ -1,0 +1,88 @@
+<div class="page-wrapper">
+  <!-- ===== HERO CINEMATOGRÁFICO ===== -->
+  <header class="hero">
+    <div class="hero-backdrop">
+      <img
+        src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80&auto=format&fit=crop"
+        alt=""
+        class="hero-image"
+        aria-hidden="true"
+      />
+      <div class="hero-overlay"></div>
+      <div class="hero-vignette"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-line"></span>
+        <span class="badge-text">EST. 2026 &middot; NEW YORK</span>
+        <span class="badge-line"></span>
+      </div>
+      <h1 class="hero-title">
+        <span class="title-line">Mise en</span>
+        <span class="title-line title-accent"> Place</span>
+      </h1>
+      <p class="hero-subtitle">A curated collection of culinary masterpieces</p>
+      <div class="hero-ornament">&#10022;</div>
+    </div>
+
+    <div class="hero-scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </header>
+
+  <!-- ===== CONTENIDO PRINCIPAL ===== -->
+  <main class="app-shell">
+    <app-alert />
+
+    @if (showCreateForm()) {
+      <app-recipe-form
+        (save)="onCreate($event)"
+        (cancelled)="showCreateForm.set(false)"
+      />
+    }
+
+    @if (editingRecipe(); as recipe) {
+      <app-recipe-form
+        [recipe]="recipe"
+        (save)="onUpdate(recipe.id, $event)"
+        (cancelled)="editingRecipe.set(null)"
+      />
+    }
+
+    <app-recipe-list
+      [recipes]="store.recipes()"
+      [loading]="store.loading()"
+      (edit)="editingRecipe.set($event)"
+      (delete)="recipeToDelete.set($event)"
+    />
+  </main>
+
+  <!-- ===== FAB ===== -->
+  @if (!showCreateForm() && !editingRecipe()) {
+    <button
+      type="button"
+      class="fab-button"
+      (click)="showCreateForm.set(true)"
+      [disabled]="store.loading()"
+      aria-label="Crear nueva receta"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </button>
+  }
+
+  <!-- ===== CONFIRM DIALOG ===== -->
+  @if (recipeToDelete(); as target) {
+    <app-confirm-dialog
+      id="delete-recipe"
+      title="¿Eliminar receta?"
+      [message]="'Se eliminará &quot;' + target.title + '&quot; para siempre.'"
+      (confirmed)="confirmDelete()"
+      (cancelled)="recipeToDelete.set(null)"
+    />
+  }
+</div>

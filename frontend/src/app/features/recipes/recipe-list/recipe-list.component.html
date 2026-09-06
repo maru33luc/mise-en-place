@@ -1,0 +1,31 @@
+<section class="recipes-section">
+  <div class="section-header">
+    <div class="header-left">
+      <span class="section-label">Colección</span>
+      <h2 class="section-title">Mis Recetas</h2>
+    </div>
+    <div class="recipe-count">
+      <span class="count-number">{{ recipes().length }}</span>
+      <span class="count-label">{{ recipes().length === 1 ? 'receta' : 'recetas' }}</span>
+    </div>
+  </div>
+
+  @if (loading() && recipes().length === 0) {
+    <app-loading />
+  } @else if (recipes().length > 0) {
+    <div class="recipes-grid">
+      @for (recipe of recipes(); track recipe.id) {
+        <app-recipe-card
+          [recipe]="recipe"
+          (edit)="edit.emit($event)"
+          (delete)="delete.emit($event)"
+        />
+      }
+    </div>
+  } @else if (!loading()) {
+    <app-empty-state
+      title="No hay recetas aún"
+      message="Crea tu primera receta haciendo clic en el botón + arriba"
+    />
+  }
+</section>

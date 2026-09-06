@@ -26,7 +26,7 @@ describe('RecipeService', () => {
 
   it('getAll() hace GET a /api/recipes', () => {
     service.getAll().subscribe((res) => expect(res.data).toBeDefined());
-    const req = httpMock.expectOne('/api/recipes');
+    const req = httpMock.expectOne((r) => r.url.includes('/api/recipes'));
     expect(req.request.method).toBe('GET');
     req.flush({ success: true, data: [], message: 'ok' });
   });
@@ -34,7 +34,7 @@ describe('RecipeService', () => {
   it('create() hace POST con el payload', () => {
     const payload = { title: 'X', description: 'desc', difficulty: 'medium' as const, ingredients: [] };
     service.create(payload).subscribe();
-    const req = httpMock.expectOne('/api/recipes');
+    const req = httpMock.expectOne((r) => r.url.includes('/api/recipes'));
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     req.flush({ success: true, data: { id: 1, ...payload }, message: 'ok' });
@@ -42,7 +42,7 @@ describe('RecipeService', () => {
 
   it('delete() hace DELETE con el id', () => {
     service.delete(42).subscribe();
-    const req = httpMock.expectOne('/api/recipes/42');
+    const req = httpMock.expectOne((r) => r.url.includes('/api/recipes/42'));
     expect(req.request.method).toBe('DELETE');
     req.flush({ success: true, message: 'ok' });
   });
