@@ -3,6 +3,9 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { rateLimit } = require('express-rate-limit');
 const recipesRoutes = require('./routes/practices');
+const authRoutes = require('./routes/auth');
+const menuRoutes = require('./routes/menu');
+const prepListRoutes = require('./routes/prepList');
 const RecipesController = require('./controllers/practicesController');
 
 const BASE_PORT       = parseInt(process.env.PORT, 10)             || 3000;
@@ -19,7 +22,7 @@ app.disable('x-powered-by');
 app.use(cors({
   origin: ALLOWED_ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: false
 }));
 
@@ -33,7 +36,10 @@ app.use('/api/', rateLimit({
 
 app.use(express.json({ limit: BODY_LIMIT }));
 
+app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipesRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/prep-list', prepListRoutes);
 app.get('/api/health', RecipesController.health);
 
 app.use((_req, res) => {

@@ -15,6 +15,9 @@ export interface Recipe {
   description: string;
   difficulty: Difficulty;
   ingredients: Ingredient[];
+  season?: 'spring' | 'summer' | 'fall' | 'winter' | 'all';
+  tags?: string[];
+  servings?: number;
 }
 
 /** DTO usado para crear/actualizar una receta (sin el id que genera el servidor). */

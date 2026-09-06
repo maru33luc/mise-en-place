@@ -2,8 +2,11 @@ const express = require('express');
 const RecipesController = require('../controllers/practicesController');
 const validateRequest = require('../middleware/validate');
 const { createRecipeSchema, updateRecipeSchema } = require('../schemas/practiceSchema');
+const { authMiddleware } = require('../middleware/auth');
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 router.get('/', RecipesController.getAllRecipes);
 router.get('/:id', RecipesController.getRecipeById);
