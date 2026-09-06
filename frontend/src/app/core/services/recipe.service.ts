@@ -1,35 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../environments/environment';
+import { environment } from '../../../environments/environment';
+import type { ApiResponse } from '@core/models/api-response.model';
+import type { Recipe, RecipePayload } from '@core/models/recipe.model';
 
-export interface Recipe {
-  id: number;
-  title: string;
-  description: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-  ingredients: Ingredient[];
-}
-
-export interface Ingredient {
-  name: string;
-  amount: number;
-  unit: string;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  message: string;
-  errors?: { field: string; message: string }[];
-}
-
-@Injectable({
-  providedIn: 'root',
-})
+/**
+ * Capa puramente HTTP del dominio recetas.
+ * No maneja estado: los consumidores (RecipesStore) deciden qué hacer con la respuesta.
+ */
+@Injectable({ providedIn: 'root' })
 export class RecipeService {
-  private http = inject(HttpClient);
-
+  private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/recipes`;
 
   getAll(): Observable<ApiResponse<Recipe[]>> {
@@ -40,11 +22,11 @@ export class RecipeService {
     return this.http.get<ApiResponse<Recipe>>(`${this.baseUrl}/${id}`);
   }
 
-  create(recipe: Omit<Recipe, 'id'>): Observable<ApiResponse<Recipe>> {
+  create(recipe: RecipePayload): Observable<ApiResponse<Recipe>> {
     return this.http.post<ApiResponse<Recipe>>(this.baseUrl, recipe);
   }
 
-  update(id: number, recipe: Partial<Omit<Recipe, 'id'>>): Observable<ApiResponse<Recipe>> {
+  update(id: number, recipe: Partial<RecipePayload>): Observable<ApiResponse<Recipe>> {
     return this.http.put<ApiResponse<Recipe>>(`${this.baseUrl}/${id}`, recipe);
   }
 

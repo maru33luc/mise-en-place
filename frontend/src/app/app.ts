@@ -1,8 +1,16 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
-import { RecipeService } from './recipe.service';
-import type { Recipe, Ingredient, ApiResponse } from './recipe.service';
+import { RecipesStore } from '@core/services/recipes.store';
+import type { Recipe, Ingredient } from '@core/models/recipe.model';
+import {
+  validateTitle,
+  validateDescription,
+  validateIngredients,
+  validateIngredientName,
+  validateIngredientAmount,
+  validateIngredientUnit,
+} from '@core/utils/validators';
 
 interface EditForm {
   title: string;
@@ -22,12 +30,12 @@ interface EditForm {
   styleUrl: './app.css',
 })
 export class App implements OnInit {
-  private recipeService = inject(RecipeService);
+  private readonly store = inject(RecipesStore);
 
-  protected readonly recipes = signal<Recipe[]>([]);
-  protected readonly loading = signal(false);
-  protected readonly error = signal<string | null>(null);
+  protected readonly recipes = this.store.recipes;
+  protected readonly loading = this.store.loading;
   protected readonly success = signal<string | null>(null);
+  protected readonly error = signal<string | null>(null);
 
   protected readonly newRecipeTitle = signal('');
   protected readonly newRecipeDescription = signal('');
@@ -40,9 +48,8 @@ export class App implements OnInit {
 
   protected readonly editingId = signal<number | null>(null);
   protected editForm: EditForm | null = null;
-
-  ngOnInit(): void {
-    this.loadRecipes();
+ngOnInit(): void {
+    this.store.load();
   }
 
   protected startEdit(recipe: Recipe): void {
@@ -84,60 +91,29 @@ export class App implements OnInit {
     const id = this.editingId();
     if (!id || !this.editForm) return;
 
-    if (
-      !this.editForm.title.trim() ||
-      !this.editForm.description.trim() ||
-      this.editForm.ingredients.length === 0
-    ) {
-      this.error.set('Completa todos los campos y agrega al menos 1 ingrediente');
-      setTimeout(() => this.error.set(null), 3000);
+    const titleError = validateTitle(this.editForm.title);
+    const descError = validateDescription(this.editForm.description);
+    const ingredientsError = validateIngredients(this.editForm.ingredients);
+    if (titleError || descError || ingredientsError) {
+      this.error.set(titleError || descError || ingredientsError);
       return;
     }
 
-    this.loading.set(true);
-    this.recipeService
-      .update(id, {
-        title: this.editForm.title.trim(),
-        description: this.editForm.description.trim(),
-        difficulty: this.editForm.difficulty,
-        ingredients: this.editForm.ingredients,
-      })
-      .subscribe({
-        next: (response: ApiResponse<Recipe>) => {
-          if (response.success) {
-            this.success.set('Receta actualizada');
-            this.loadRecipes();
-            this.cancelEdit();
-            setTimeout(() => this.success.set(null), 2000);
-          }
-          this.loading.set(false);
-        },
-        error: (err: unknown) => {
-          this.error.set(this.formatError(err));
-          this.loading.set(false);
-        },
-      });
+    this.store.update(id, {
+      title: this.editForm.title.trim(),
+      description: this.editForm.description.trim(),
+      difficulty: this.editForm.difficulty,
+      ingredients: this.editForm.ingredients,
+    });
+    this.cancelEdit();
+    this.success.set('Receta actualizada');
+    setTimeout(() => this.success.set(null), 2000);
   }
 
   protected loadRecipes(): void {
-    this.loading.set(true);
-    this.error.set(null);
-    this.recipeService.getAll().subscribe({
-      next: (response: ApiResponse<Recipe[]>) => {
-        if (response.success && response.data) {
-          this.recipes.set(response.data);
-        }
-        this.loading.set(false);
-      },
-      error: (err: unknown) => {
-        this.error.set('Error al cargar recetas');
-        console.error(err);
-        this.loading.set(false);
-      },
-    });
+    this.store.load();
   }
-
-  protected toggleForm(): void {
+protected toggleForm(): void {
     this.showForm.update((v: boolean) => !v);
     if (!this.showForm()) {
       this.resetForm();
@@ -150,34 +126,26 @@ export class App implements OnInit {
     const amount = parseFloat(this.ingredientAmount());
     const unit = this.ingredientUnit().trim();
 
-    if (!name) {
-      this.error.set('El nombre del ingrediente es requerido');
+    const nameError = validateIngredientName(name);
+    if (nameError) {
+      this.error.set(nameError);
       setTimeout(() => this.error.set(null), 3000);
       return;
     }
-    if (!isNaN(Number(name))) {
-      this.error.set('El nombre del ingrediente no puede ser solo un número');
+    const amountError = validateIngredientAmount(this.ingredientAmount());
+    if (amountError) {
+      this.error.set(amountError);
       setTimeout(() => this.error.set(null), 3000);
       return;
     }
-    if (!this.ingredientAmount().trim() || isNaN(amount) || amount <= 0) {
-      this.error.set('La cantidad debe ser un número positivo');
-      setTimeout(() => this.error.set(null), 3000);
-      return;
-    }
-    if (!unit) {
-      this.error.set('La unidad es requerida');
-      setTimeout(() => this.error.set(null), 3000);
-      return;
-    }
-    if (!isNaN(Number(unit))) {
-      this.error.set('La unidad no puede ser solo un número');
+    const unitError = validateIngredientUnit(unit);
+    if (unitError) {
+      this.error.set(unitError);
       setTimeout(() => this.error.set(null), 3000);
       return;
     }
 
     this.tempIngredients.update((ing: Ingredient[]) => [...ing, { name, amount, unit }]);
-
     this.ingredientName.set('');
     this.ingredientAmount.set('');
     this.ingredientUnit.set('');
@@ -192,76 +160,34 @@ export class App implements OnInit {
     const description = this.newRecipeDescription().trim();
     const ingredients = this.tempIngredients();
 
-    if (!title) {
-      this.error.set('El título es requerido');
+    const titleError = validateTitle(title);
+    if (titleError) {
+      this.error.set(titleError);
       return;
     }
-    if (!isNaN(Number(title))) {
-      this.error.set('El título no puede ser solo un número');
+    const descError = validateDescription(description);
+    if (descError) {
+      this.error.set(descError);
       return;
     }
-    if (!description) {
-      this.error.set('La descripción es requerida');
-      return;
-    }
-    if (!isNaN(Number(description))) {
-      this.error.set('La descripción no puede ser solo un número');
-      return;
-    }
-    if (ingredients.length === 0) {
-      this.error.set('Agrega al menos 1 ingrediente');
+    const ingredientsError = validateIngredients(ingredients);
+    if (ingredientsError) {
+      this.error.set(ingredientsError);
       return;
     }
 
-    this.loading.set(true);
-
-    this.recipeService
-      .create({
-        title,
-        description,
-        difficulty: this.newRecipeDifficulty(),
-        ingredients,
-      })
-      .subscribe({
-        next: (response: ApiResponse<Recipe>) => {
-          if (response.success) {
-            this.success.set('¡Receta creada exitosamente!');
-            this.loadRecipes();
-            this.resetForm();
-
-            setTimeout(() => {
-              this.success.set(null);
-              this.showForm.set(false);
-            }, 2000);
-          }
-          this.loading.set(false);
-        },
-        error: (err: unknown) => {
-          this.error.set(this.formatError(err));
-          console.error(err);
-          this.loading.set(false);
-        },
-      });
+    this.store.create({ title, description, difficulty: this.newRecipeDifficulty(), ingredients });
+    this.resetForm();
+    this.success.set('¡Receta creada exitosamente!');
+    this.showForm.set(false);
+    setTimeout(() => this.success.set(null), 2000);
   }
 
   protected removeRecipe(id: number): void {
     if (!confirm('¿Deseas eliminar esta receta?')) return;
-
-    this.loading.set(true);
-    this.recipeService.delete(id).subscribe({
-      next: (response: ApiResponse<Recipe>) => {
-        if (response.success) {
-          this.success.set('Receta eliminada');
-          this.loadRecipes();
-          setTimeout(() => this.success.set(null), 2000);
-        }
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set('Error al eliminar receta');
-        this.loading.set(false);
-      },
-    });
+    this.store.delete(id);
+    this.success.set('Receta eliminada');
+    setTimeout(() => this.success.set(null), 2000);
   }
 
   protected getDifficultyClass(difficulty: string): string {
@@ -289,14 +215,5 @@ export class App implements OnInit {
     this.newRecipeDescription.set('');
     this.tempIngredients.set([]);
     this.newRecipeDifficulty.set('easy');
-  }
-
-  private formatError(err: unknown): string {
-    const e = err as { error?: { errors?: { message: string }[]; message?: string } };
-    const apiErrors = e.error?.errors;
-    if (Array.isArray(apiErrors) && apiErrors.length > 0) {
-      return apiErrors.map((e) => e.message).join(' · ');
-    }
-    return e.error?.message || 'Error inesperado';
   }
 }
