@@ -10,106 +10,63 @@ class RecipesController {
         message: 'Recetas obtenidas exitosamente'
       });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error al obtener recetas',
-        error: error.message
-      });
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Error al obtener recetas' });
     }
   }
 
   static getRecipeById(req, res) {
     try {
-      const { id } = req.params;
-      const recipe = Recipe.getById(parseInt(id));
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ success: false, message: 'ID inválido' });
 
-      if (!recipe) {
-        return res.status(404).json({
-          success: false,
-          message: 'Receta no encontrada'
-        });
-      }
+      const recipe = Recipe.getById(id);
+      if (!recipe) return res.status(404).json({ success: false, message: 'Receta no encontrada' });
 
-      res.json({
-        success: true,
-        data: recipe,
-        message: 'Receta obtenida exitosamente'
-      });
+      res.json({ success: true, data: recipe, message: 'Receta obtenida exitosamente' });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error al obtener receta',
-        error: error.message
-      });
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Error al obtener receta' });
     }
   }
 
   static createRecipe(req, res) {
     try {
       const newRecipe = Recipe.create(req.validated);
-      res.status(201).json({
-        success: true,
-        data: newRecipe,
-        message: 'Receta creada exitosamente'
-      });
+      res.status(201).json({ success: true, data: newRecipe, message: 'Receta creada exitosamente' });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error al crear receta',
-        error: error.message
-      });
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Error al crear receta' });
     }
   }
 
   static updateRecipe(req, res) {
     try {
-      const { id } = req.params;
-      const updated = Recipe.update(parseInt(id), req.validated);
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ success: false, message: 'ID inválido' });
 
-      if (!updated) {
-        return res.status(404).json({
-          success: false,
-          message: 'Receta no encontrada'
-        });
-      }
+      const updated = Recipe.update(id, req.validated);
+      if (!updated) return res.status(404).json({ success: false, message: 'Receta no encontrada' });
 
-      res.json({
-        success: true,
-        data: updated,
-        message: 'Receta actualizada exitosamente'
-      });
+      res.json({ success: true, data: updated, message: 'Receta actualizada exitosamente' });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error al actualizar receta',
-        error: error.message
-      });
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Error al actualizar receta' });
     }
   }
 
   static deleteRecipe(req, res) {
     try {
-      const { id } = req.params;
-      const deleted = Recipe.delete(parseInt(id));
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ success: false, message: 'ID inválido' });
 
-      if (!deleted) {
-        return res.status(404).json({
-          success: false,
-          message: 'Receta no encontrada'
-        });
-      }
+      const deleted = Recipe.delete(id);
+      if (!deleted) return res.status(404).json({ success: false, message: 'Receta no encontrada' });
 
-      res.json({
-        success: true,
-        data: deleted,
-        message: 'Receta eliminada exitosamente'
-      });
+      res.json({ success: true, data: deleted, message: 'Receta eliminada exitosamente' });
     } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error al eliminar receta',
-        error: error.message
-      });
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Error al eliminar receta' });
     }
   }
 

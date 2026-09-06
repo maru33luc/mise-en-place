@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "frontend:install": "cd frontend && npm install",
-    "frontend:start": "cd frontend && npm start",
-    "frontend:build": "cd frontend && npm run build"
+    "backend:install": "cd backend && pnpm install",
+    "backend:start": "cd backend && pnpm start",
+    "frontend:install": "cd frontend && pnpm install",
+    "frontend:start": "cd frontend && pnpm start",
+    "frontend:build": "cd frontend && pnpm run build"
   }
 }

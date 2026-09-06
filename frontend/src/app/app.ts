@@ -2,7 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RecipeService } from './recipe.service';
-import type { Recipe, Ingredient } from './recipe.service';
+import type { Recipe, Ingredient, ApiResponse } from './recipe.service';
 
 interface EditForm {
   title: string;
@@ -97,7 +97,7 @@ export class App implements OnInit {
       difficulty: this.editForm.difficulty,
       ingredients: this.editForm.ingredients
     }).subscribe({
-      next: (response) => {
+      next: (response: ApiResponse<Recipe>) => {
         if (response.success) {
           this.success.set('Receta actualizada');
           this.loadRecipes();
@@ -106,7 +106,7 @@ export class App implements OnInit {
         }
         this.loading.set(false);
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.error.set(this.formatError(err));
         this.loading.set(false);
       }
@@ -117,13 +117,13 @@ export class App implements OnInit {
     this.loading.set(true);
     this.error.set(null);
     this.recipeService.getAll().subscribe({
-      next: (response) => {
+      next: (response: ApiResponse<Recipe[]>) => {
         if (response.success && response.data) {
           this.recipes.set(response.data);
         }
         this.loading.set(false);
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.error.set('Error al cargar recetas');
         console.error(err);
         this.loading.set(false);
@@ -132,7 +132,7 @@ export class App implements OnInit {
   }
 
   protected toggleForm(): void {
-    this.showForm.update(v => !v);
+    this.showForm.update((v: boolean) => !v);
     if (!this.showForm()) {
       this.resetForm();
       this.error.set(null);
@@ -170,7 +170,7 @@ export class App implements OnInit {
       return;
     }
 
-    this.tempIngredients.update((ing) => [
+    this.tempIngredients.update((ing: Ingredient[]) => [
       ...ing,
       { name, amount, unit }
     ]);
@@ -181,7 +181,7 @@ export class App implements OnInit {
   }
 
   protected removeIngredient(index: number): void {
-    this.tempIngredients.update((ing) =>
+    this.tempIngredients.update((ing: Ingredient[]) =>
       ing.filter((_, i) => i !== index)
     );
   }
@@ -220,7 +220,7 @@ export class App implements OnInit {
       difficulty: this.newRecipeDifficulty(),
       ingredients
     }).subscribe({
-      next: (response) => {
+      next: (response: ApiResponse<Recipe>) => {
         if (response.success) {
           this.success.set('¡Receta creada exitosamente!');
           this.loadRecipes();
@@ -233,7 +233,7 @@ export class App implements OnInit {
         }
         this.loading.set(false);
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.error.set(this.formatError(err));
         console.error(err);
         this.loading.set(false);
@@ -246,7 +246,7 @@ export class App implements OnInit {
 
     this.loading.set(true);
     this.recipeService.delete(id).subscribe({
-      next: (response) => {
+      next: (response: ApiResponse<Recipe>) => {
         if (response.success) {
           this.success.set('Receta eliminada');
           this.loadRecipes();
@@ -254,7 +254,7 @@ export class App implements OnInit {
         }
         this.loading.set(false);
       },
-      error: (err) => {
+      error: (_err: unknown) => {
         this.error.set('Error al eliminar receta');
         this.loading.set(false);
       }
@@ -284,11 +284,12 @@ export class App implements OnInit {
     this.newRecipeDifficulty.set('easy');
   }
 
-  private formatError(err: any): string {
-    const apiErrors = err.error?.errors;
+  private formatError(err: unknown): string {
+    const e = err as { error?: { errors?: Array<{ message: string }>; message?: string } };
+    const apiErrors = e.error?.errors;
     if (Array.isArray(apiErrors) && apiErrors.length > 0) {
-      return apiErrors.map((e: any) => e.message).join(' · ');
+      return apiErrors.map((e) => e.message).join(' · ');
     }
-    return err.error?.message || 'Error inesperado';
+    return e.error?.message || 'Error inesperado';
   }
 }

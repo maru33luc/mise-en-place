@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 export interface Recipe {
   id: number;
@@ -27,7 +28,7 @@ export interface ApiResponse<T> {
   providedIn: 'root'
 })
 export class RecipeService {
-  private readonly baseUrl = 'http://localhost:3000/api/recipes';
+  private readonly baseUrl = `${environment.apiUrl}/recipes`;
 
   constructor(private http: HttpClient) {}
 
