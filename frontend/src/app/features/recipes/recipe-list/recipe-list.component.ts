@@ -79,7 +79,9 @@ import type { Recipe } from '@core/models/recipe.model';
     .recipes-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-auto-rows: 1fr;
       gap: 1.5rem;
+      align-items: stretch;
     }
     @media (max-width: 768px) { .recipes-grid { grid-template-columns: 1fr; } }
     `,

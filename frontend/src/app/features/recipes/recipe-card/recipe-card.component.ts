@@ -42,6 +42,8 @@ import type { Recipe } from '@core/models/recipe.model';
       padding: 2rem;
       display: flex;
       flex-direction: column;
+      height: 100%;
+      box-sizing: border-box;
       transition: all 0.3s ease;
       border-top: 2px solid transparent;
     }
@@ -51,7 +53,7 @@ import type { Recipe } from '@core/models/recipe.model';
       transform: translateY(-3px);
     }
     .recipe-card-top { display: flex; flex-direction: column; gap: 0.75rem; }
-    .recipe-card-body { flex: 1; }
+    .recipe-card-body { flex: 1; min-height: 0; }
     .recipe-card-footer { margin-top: auto; padding-top: 1.5rem; display: flex; gap: 0.75rem; }
     .recipe-badge {
       align-self: flex-start;

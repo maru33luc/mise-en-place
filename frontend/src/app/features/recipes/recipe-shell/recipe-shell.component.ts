@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RecipesStore } from '@core/services/recipes.store';
 import { AlertComponent } from '@shared/alert/alert.component';
@@ -132,9 +132,12 @@ import type { Recipe } from '@core/models/recipe.model';
     `,
   ],
 })
-export class RecipeShellComponent {
+export class RecipeShellComponent implements OnInit {
   protected readonly store = inject(RecipesStore);
 
+  ngOnInit(): void {
+    this.store.load();
+  }
   protected readonly showCreateForm = signal(false);
   protected readonly editingRecipe = signal<Recipe | null>(null);
   protected readonly recipeToDelete = signal<Recipe | null>(null);
