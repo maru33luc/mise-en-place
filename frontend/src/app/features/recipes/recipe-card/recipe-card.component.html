@@ -2,11 +2,13 @@
   <!-- Imagen con overlay -->
   <div class="card-image">
     <img
-      [src]="'https://images.unsplash.com/photo-' + getFoodImage(recipe().id) + '?w=600&q=80&auto=format&fit=crop'"
+      [src]="getFoodImage(recipe().id)"
       [alt]="recipe().title"
       loading="lazy"
+      (error)="onImgError($event)"
     />
     <div class="card-image-overlay"></div>
+    <div class="card-image-ornament" aria-hidden="true">✦</div>
     <div class="card-badge" [class]="DIFFICULTY_CONFIG[recipe().difficulty].badge">
       {{ DIFFICULTY_CONFIG[recipe().difficulty].label }}
     </div>

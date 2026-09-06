@@ -15,18 +15,26 @@ export class RecipeCardComponent {
   edit = output<Recipe>();
   delete = output<Recipe>();
 
-  /** Imágenes variadas de comida para las cards. */
+  /** Fotografías de comida (IDs verificados de Unsplash), elegidas por id de receta. */
+  private readonly foodImages = [
+    'photo-1546069901-ba9599a7e63c', // bowl gourmet
+    'photo-1512621776951-a57141f2eefd', // ensalada
+    'photo-1467003909585-2f8a72700288', // plato de salmón
+    'photo-1567620905732-2d1ec7ab7445', // pancakes
+    'photo-1540189549336-e6e99c3679fe', // salmón
+    'photo-1565958011703-44f9829ba187', // postre
+    'photo-1482049016688-2d3e1b311543', // plato toast
+    'photo-1476224203421-9ac39bcb3327', // noodles
+  ];
+
   getFoodImage(id: number): string {
-    const images = [
-      '1504674491297-be0c61ea1d0a', // pasta
-      '1546069901-9a6fdf0c3b6a', // steak
-      '1565299624946-b29f6ec19c2c', // seafood
-      '1476224244847-3a1bce4e20e5', // salad
-      '1567620995520-0e8532f3ed69', // soup
-      '1551024541-2317249e0f3a', // dessert
-      '1499635316323-e5b8799eb536', // breakfast
-      '1473093295673-caac58e4f7f4', // sushi
-    ];
-    return images[id % images.length];
+    const photo = this.foodImages[id % this.foodImages.length];
+    return `https://images.unsplash.com/${photo}?w=640&q=80&auto=format&fit=crop`;
+  }
+
+  /** Si la imagen no carga, ocultamos el <img> y el fondo decorativo del contenedor queda visible. */
+  onImgError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
   }
 }
