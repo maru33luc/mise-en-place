@@ -96,34 +96,35 @@ import type { Ingredient } from '@core/models/recipe.model';
     .text-input {
       width: 100%;
       padding: 0.85rem 1rem;
-      background: #0a0a0a;
+      background: #080808;
       border: 1px solid #2a2a2a;
       border-radius: 2px;
-      color: #e8e0d0;
+      color: #f0e6d2;
       font-size: 0.95rem;
       font-family: inherit;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
     }
     .text-input:focus {
       outline: none;
       border-color: #c9a96e;
-      box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.08);
+      background: #0a0a0a;
+      box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
     }
     .secondary-button {
       cursor: pointer;
       background: transparent;
-      color: #888;
+      color: #8a8070;
       border: 1px solid #2a2a2a;
       border-radius: 2px;
       font-weight: 500;
       font-size: 0.85rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       padding: 0.9rem 1.5rem;
       font-family: inherit;
     }
-    .secondary-button:hover:not(:disabled) { border-color: #555; color: #e8e0d0; }
+    .secondary-button:hover:not(:disabled) { border-color: #555; color: #f0e6d2; }
     .secondary-button:disabled { opacity: 0.4; cursor: not-allowed; }
     @media (max-width: 768px) { .ingredient-input { grid-template-columns: 1fr; } }
     `,
