@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
@@ -21,16 +21,16 @@ export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   message: string;
-  errors?: Array<{ field: string; message: string }>;
+  errors?: { field: string; message: string }[];
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RecipeService {
-  private readonly baseUrl = `${environment.apiUrl}/recipes`;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private readonly baseUrl = `${environment.apiUrl}/recipes`;
 
   getAll(): Observable<ApiResponse<Recipe[]>> {
     return this.http.get<ApiResponse<Recipe[]>>(this.baseUrl);

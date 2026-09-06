@@ -1,5 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, inject } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { RecipeService } from './recipe.service';
 import type { Recipe, Ingredient, ApiResponse } from './recipe.service';
@@ -17,11 +17,13 @@ interface EditForm {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App implements OnInit {
+  private recipeService = inject(RecipeService);
+
   protected readonly recipes = signal<Recipe[]>([]);
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
@@ -39,8 +41,6 @@ export class App implements OnInit {
   protected readonly editingId = signal<number | null>(null);
   protected editForm: EditForm | null = null;
 
-  constructor(private recipeService: RecipeService) {}
-
   ngOnInit(): void {
     this.loadRecipes();
   }
@@ -54,7 +54,7 @@ export class App implements OnInit {
       ingredients: [...recipe.ingredients],
       ingredientName: '',
       ingredientAmount: '',
-      ingredientUnit: ''
+      ingredientUnit: '',
     };
   }
 
@@ -84,33 +84,39 @@ export class App implements OnInit {
     const id = this.editingId();
     if (!id || !this.editForm) return;
 
-    if (!this.editForm.title.trim() || !this.editForm.description.trim() || this.editForm.ingredients.length === 0) {
+    if (
+      !this.editForm.title.trim() ||
+      !this.editForm.description.trim() ||
+      this.editForm.ingredients.length === 0
+    ) {
       this.error.set('Completa todos los campos y agrega al menos 1 ingrediente');
       setTimeout(() => this.error.set(null), 3000);
       return;
     }
 
     this.loading.set(true);
-    this.recipeService.update(id, {
-      title: this.editForm.title.trim(),
-      description: this.editForm.description.trim(),
-      difficulty: this.editForm.difficulty,
-      ingredients: this.editForm.ingredients
-    }).subscribe({
-      next: (response: ApiResponse<Recipe>) => {
-        if (response.success) {
-          this.success.set('Receta actualizada');
-          this.loadRecipes();
-          this.cancelEdit();
-          setTimeout(() => this.success.set(null), 2000);
-        }
-        this.loading.set(false);
-      },
-      error: (err: unknown) => {
-        this.error.set(this.formatError(err));
-        this.loading.set(false);
-      }
-    });
+    this.recipeService
+      .update(id, {
+        title: this.editForm.title.trim(),
+        description: this.editForm.description.trim(),
+        difficulty: this.editForm.difficulty,
+        ingredients: this.editForm.ingredients,
+      })
+      .subscribe({
+        next: (response: ApiResponse<Recipe>) => {
+          if (response.success) {
+            this.success.set('Receta actualizada');
+            this.loadRecipes();
+            this.cancelEdit();
+            setTimeout(() => this.success.set(null), 2000);
+          }
+          this.loading.set(false);
+        },
+        error: (err: unknown) => {
+          this.error.set(this.formatError(err));
+          this.loading.set(false);
+        },
+      });
   }
 
   protected loadRecipes(): void {
@@ -127,7 +133,7 @@ export class App implements OnInit {
         this.error.set('Error al cargar recetas');
         console.error(err);
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -170,10 +176,7 @@ export class App implements OnInit {
       return;
     }
 
-    this.tempIngredients.update((ing: Ingredient[]) => [
-      ...ing,
-      { name, amount, unit }
-    ]);
+    this.tempIngredients.update((ing: Ingredient[]) => [...ing, { name, amount, unit }]);
 
     this.ingredientName.set('');
     this.ingredientAmount.set('');
@@ -181,9 +184,7 @@ export class App implements OnInit {
   }
 
   protected removeIngredient(index: number): void {
-    this.tempIngredients.update((ing: Ingredient[]) =>
-      ing.filter((_, i) => i !== index)
-    );
+    this.tempIngredients.update((ing: Ingredient[]) => ing.filter((_, i) => i !== index));
   }
 
   protected addRecipe(): void {
@@ -213,32 +214,34 @@ export class App implements OnInit {
     }
 
     this.loading.set(true);
-    
-    this.recipeService.create({
-      title,
-      description,
-      difficulty: this.newRecipeDifficulty(),
-      ingredients
-    }).subscribe({
-      next: (response: ApiResponse<Recipe>) => {
-        if (response.success) {
-          this.success.set('¡Receta creada exitosamente!');
-          this.loadRecipes();
-          this.resetForm();
-          
-          setTimeout(() => {
-            this.success.set(null);
-            this.showForm.set(false);
-          }, 2000);
-        }
-        this.loading.set(false);
-      },
-      error: (err: unknown) => {
-        this.error.set(this.formatError(err));
-        console.error(err);
-        this.loading.set(false);
-      }
-    });
+
+    this.recipeService
+      .create({
+        title,
+        description,
+        difficulty: this.newRecipeDifficulty(),
+        ingredients,
+      })
+      .subscribe({
+        next: (response: ApiResponse<Recipe>) => {
+          if (response.success) {
+            this.success.set('¡Receta creada exitosamente!');
+            this.loadRecipes();
+            this.resetForm();
+
+            setTimeout(() => {
+              this.success.set(null);
+              this.showForm.set(false);
+            }, 2000);
+          }
+          this.loading.set(false);
+        },
+        error: (err: unknown) => {
+          this.error.set(this.formatError(err));
+          console.error(err);
+          this.loading.set(false);
+        },
+      });
   }
 
   protected removeRecipe(id: number): void {
@@ -254,27 +257,31 @@ export class App implements OnInit {
         }
         this.loading.set(false);
       },
-      error: (_err: unknown) => {
+      error: () => {
         this.error.set('Error al eliminar receta');
         this.loading.set(false);
-      }
+      },
     });
   }
 
   protected getDifficultyClass(difficulty: string): string {
-    return {
-      easy: 'difficulty-easy',
-      medium: 'difficulty-medium',
-      hard: 'difficulty-hard'
-    }[difficulty] || '';
+    return (
+      {
+        easy: 'difficulty-easy',
+        medium: 'difficulty-medium',
+        hard: 'difficulty-hard',
+      }[difficulty] || ''
+    );
   }
 
   protected getDifficultyLabel(difficulty: string): string {
-    return {
-      easy: 'Fácil',
-      medium: 'Media',
-      hard: 'Difícil'
-    }[difficulty] || difficulty;
+    return (
+      {
+        easy: 'Fácil',
+        medium: 'Media',
+        hard: 'Difícil',
+      }[difficulty] || difficulty
+    );
   }
 
   protected resetForm(): void {
@@ -285,7 +292,7 @@ export class App implements OnInit {
   }
 
   private formatError(err: unknown): string {
-    const e = err as { error?: { errors?: Array<{ message: string }>; message?: string } };
+    const e = err as { error?: { errors?: { message: string }[]; message?: string } };
     const apiErrors = e.error?.errors;
     if (Array.isArray(apiErrors) && apiErrors.length > 0) {
       return apiErrors.map((e) => e.message).join(' · ');

@@ -1,4 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles — eliminada la importación de Google Fonts de app.css */
+/* Fuentes globales movidas aquí desde app.css (budget anyComponentStyle) */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -6,4 +9,5 @@ html, body {
   margin: 0;
   padding: 0;
   background-color: #0a0a0a;
+  font-family: 'Inter', sans-serif;
 }
