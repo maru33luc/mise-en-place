@@ -1,7 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RecipesStore } from '@core/services/recipes.store';
-import { AlertComponent } from '@shared/alert/alert.component';
 import { ConfirmDialogComponent } from '@shared/confirm-dialog/confirm-dialog.component';
 import { RecipeListComponent } from '../recipe-list/recipe-list.component';
 import { RecipeFormComponent } from '../recipe-form/recipe-form.component';
@@ -10,7 +9,7 @@ import type { Recipe } from '@core/models/recipe.model';
 @Component({
   selector: 'app-recipe-shell',
   standalone: true,
-  imports: [FormsModule, AlertComponent, ConfirmDialogComponent, RecipeListComponent, RecipeFormComponent],
+  imports: [FormsModule, ConfirmDialogComponent, RecipeListComponent, RecipeFormComponent],
   templateUrl: './recipe-shell.component.html',
   styleUrls: ['./recipe-shell.component.css'],
 })

@@ -129,13 +129,14 @@ The frontend API URL is configured in `frontend/src/environments/environment.ts`
 pnpm frontend:build
 pnpm frontend:test
 pnpm frontend:lint
+pnpm backend:test
 ```
 
-Current known test coverage is frontend-focused. Backend request checks can be exercised through `backend/app.http` or with the documented API routes.
+The frontend suite covers components, services, utilities and authentication UI. The backend suite uses Node's native test runner and exercises real HTTP requests against an ephemeral server: health, auth, protected routes, recipe CRUD, menu persistence and prep task updates.
 
 ## Next hardening work
 
-- Add backend integration tests and schema validation for menu and prep payloads.
+- Add schema validation for menu and prep payloads.
 - Add recipe search/filter controls and complete smart unit conversion.
 - Persist timer elapsed time on update and derive prep tasks directly from menu recipes.
 - Add an actual mobile navigation drawer and broader keyboard/accessibility coverage.

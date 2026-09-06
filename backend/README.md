@@ -26,6 +26,14 @@ pnpm start
 
 See `.env.example` for the defaults used in local development.
 
+## Tests
+
+The backend integration suite uses Node's built-in `node:test` runner and starts the API on an ephemeral port, so it does not require a running `.env` server.
+
+```bash
+pnpm test
+```
+
 ## API
 
 Public:

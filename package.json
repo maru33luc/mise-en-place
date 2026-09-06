@@ -5,6 +5,7 @@
   "scripts": {
     "backend:install": "cd backend && pnpm install",
     "backend:start": "pnpm --dir backend start",
+    "backend:test": "pnpm --dir backend test",
     "frontend:install": "cd frontend && pnpm install",
     "frontend:start": "pnpm --dir frontend start",
     "frontend:build": "pnpm --dir frontend build",

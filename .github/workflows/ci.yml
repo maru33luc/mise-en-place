@@ -5,43 +5,90 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: "22.x"
+  PNPM_VERSION: "9.15.9"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   frontend:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
         with:
-          version: 11
-      - uses: actions/setup-node@v4
+          version: ${{ env.PNPM_VERSION }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run lint
-      - run: pnpm test -- --watch=false
-      - run: pnpm run build
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint frontend
+        run: pnpm run lint
+      - name: Test frontend
+        run: pnpm exec ng test --watch=false
+      - name: Build frontend
+        run: pnpm run build
 
   backend:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: backend
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
         with:
-          version: 11
-      - uses: actions/setup-node@v4
+          version: ${{ env.PNPM_VERSION }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
           cache-dependency-path: backend/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm start &
-      - run: sleep 3 && curl -f http://localhost:3000/api/health
+      - name: Install backend dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Test backend
+        run: pnpm test
+      - name: Create CI environment
+        run: cp .env.example .env
+      - name: Start API and check health
+        shell: bash
+        run: |
+          pnpm start > backend.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true; rm -f .env' EXIT
+
+          for attempt in {1..20}; do
+            if curl --fail --silent --show-error http://localhost:3000/api/health; then
+              exit 0
+            fi
+            if ! kill -0 "$server_pid" 2>/dev/null; then
+              cat backend.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          cat backend.log
+          exit 1

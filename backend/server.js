@@ -14,10 +14,6 @@ const RATE_WINDOW_MS  = parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 60_000
 const RATE_MAX        = parseInt(process.env.RATE_LIMIT_MAX, 10)   || 100;
 const BODY_LIMIT      = process.env.BODY_LIMIT                     || '10kb';
 
-if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65_535) {
-  throw new Error('PORT must be an integer between 1 and 65535 in backend/.env');
-}
-
 const app = express();
 
 app.use(helmet());
@@ -55,11 +51,28 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ success: false, message: 'Internal server error' });
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+function startServer(port = PORT) {
+  if (!Number.isInteger(port) || port < 0 || port > 65_535) {
+    throw new Error('PORT must be an integer between 1 and 65535 in backend/.env');
+  }
 
-server.on('error', (error) => {
-  console.error(`Unable to bind to configured port ${PORT}.`, error);
-  process.exit(1);
-});
+  const server = app.listen(port, () => {
+    console.log(`Server running on http://localhost:${server.address().port}`);
+  });
+
+  server.on('error', (error) => {
+    console.error(`Unable to bind to configured port ${port}.`, error);
+    process.exitCode = 1;
+  });
+
+  return server;
+}
+
+if (require.main === module) {
+  if (!Number.isInteger(PORT) || PORT < 1 || PORT > 65_535) {
+    throw new Error('PORT must be an integer between 1 and 65535 in backend/.env');
+  }
+  startServer();
+}
+
+module.exports = { app, startServer };

@@ -4,10 +4,18 @@ const { signToken } = require('../middleware/auth');
 const AuthController = {
   async register(req, res) {
     try {
-      const { name, email, password } = req.body;
+      const name = typeof req.body.name === 'string' ? req.body.name.trim() : '';
+      const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+      const password = typeof req.body.password === 'string' ? req.body.password : '';
 
       if (!name || !email || !password) {
         return res.status(400).json({ success: false, message: 'All fields are required' });
+      }
+      if (name.length < 2) {
+        return res.status(400).json({ success: false, message: 'Name must be at least 2 characters' });
+      }
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        return res.status(400).json({ success: false, message: 'Please provide a valid email address' });
       }
       if (password.length < 6) {
         return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
@@ -28,10 +36,14 @@ const AuthController = {
 
   async login(req, res) {
     try {
-      const { email, password } = req.body;
+      const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+      const password = typeof req.body.password === 'string' ? req.body.password : '';
 
       if (!email || !password) {
         return res.status(400).json({ success: false, message: 'Email and password are required' });
+      }
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        return res.status(400).json({ success: false, message: 'Please provide a valid email address' });
       }
 
       const user = await User.findByEmailAndPassword(email, password);

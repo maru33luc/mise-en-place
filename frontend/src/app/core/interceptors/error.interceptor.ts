@@ -25,7 +25,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         }
       }
 
-      toast.error(message);
+      if (!req.url.includes('/api/auth/')) {
+        toast.error(message);
+      }
       return throwError(() => err);
     }),
   );
