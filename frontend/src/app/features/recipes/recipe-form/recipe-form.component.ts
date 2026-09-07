@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Output, inject, input } from '@angular/core';
+import { Component, EventEmitter, Output, effect, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IngredientInputComponent } from '../ingredient-input/ingredient-input.component';
 import { DIFFICULTIES, DIFFICULTY_CONFIG } from '@core/models/recipe.model';
-import type { Difficulty, Ingredient, Recipe } from '@core/models/recipe.model';
+import type { Difficulty, Ingredient, Recipe, RecipePayload } from '@core/models/recipe.model';
 import {
   validateTitle,
   validateDescription,
@@ -20,6 +20,10 @@ import { ToastService } from '@core/services/toast.service';
         <span class="form-label">{{ isEdit ? 'Edit' : 'New Creation' }}</span>
         <h2>{{ isEdit ? 'Edit Recipe' : 'New Recipe' }}</h2>
       </div>
+
+      @if (formError()) {
+        <p class="form-error" role="alert" aria-live="assertive">{{ formError() }}</p>
+      }
 
       <form class="recipe-form" (ngSubmit)="onSubmit()">
         <div class="form-group">
@@ -57,9 +61,36 @@ import { ToastService } from '@core/services/toast.service';
           </select>
         </div>
 
+        <div class="form-group image-group">
+          <label for="form-image-url">Recipe image</label>
+          <input
+            id="form-image-url"
+            type="url"
+            [(ngModel)]="imageUrl"
+            name="imageUrl"
+            placeholder="Paste an image URL (optional)"
+            class="text-input"
+          />
+          <div class="image-upload-row">
+            <input id="form-image-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif" (change)="onImageSelected($event)" />
+            <label for="form-image-file" class="file-button">Choose image</label>
+            @if (imageUrl) {
+              <button type="button" class="clear-image" (click)="clearImage()">Remove image</button>
+            }
+          </div>
+          @if (imageError()) { <p class="image-error" role="alert">{{ imageError() }}</p> }
+          @if (imagePreview()) {
+            <img class="image-preview" [src]="imagePreview()" alt="Recipe preview" />
+          }
+        </div>
+
         <div class="form-group">
           <label [attr.for]="'ing-name-' + ingredientInputId">Ingredients</label>
-          <app-ingredient-input [id]="ingredientInputId" [(ingredients)]="ingredients" />
+          <app-ingredient-input
+            [id]="ingredientInputId"
+            [(ingredients)]="ingredients"
+            (errorMessage)="onIngredientError($event)"
+          />
         </div>
 
         <div class="form-actions">
@@ -122,6 +153,13 @@ import { ToastService } from '@core/services/toast.service';
       text-transform: uppercase;
       color: #8a8070;
     }
+    .image-upload-row { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+    #form-image-file { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .file-button, .clear-image { display: inline-block; padding: .7rem .9rem; border: 1px solid #3a3328; color: #c9a96e; cursor: pointer; font: 600 .65rem Inter; letter-spacing: .1em; text-transform: uppercase; }
+    .clear-image { background: transparent; }
+    .image-preview { width: 100%; max-height: 180px; object-fit: cover; border: 1px solid #2a2418; margin-top: .25rem; }
+    .image-error { color: #d47b6e; font: .7rem Inter; margin: 0; }
+    .form-error { margin: 0 0 1.25rem; padding: .75rem 1rem; border: 1px solid rgba(212,123,110,.35); background: rgba(120,40,40,.14); color: #f09a8c; font: .75rem/1.5 Inter; }
     .text-input, select, textarea {
       width: 100%;
       padding: 0.85rem 1rem;
@@ -183,7 +221,7 @@ export class RecipeFormComponent {
   /** Receta a editar; si no se provee, es un formulario de creación. */
   readonly recipe = input<Recipe | null>(null);
 
-  @Output() save = new EventEmitter<{ title: string; description: string; difficulty: Difficulty; ingredients: Ingredient[] }>();
+  @Output() save = new EventEmitter<RecipePayload>();
   @Output() cancelled = new EventEmitter<void>();
 
   private readonly toast = inject(ToastService);
@@ -196,16 +234,25 @@ export class RecipeFormComponent {
   protected description = '';
   protected difficulty: Difficulty = 'easy';
   protected ingredients: Ingredient[] = [];
+  protected imageUrl = '';
+  protected readonly formError = signal('');
+  protected readonly imagePreview = signal('');
+  protected readonly imageError = signal('');
 
-  /** Cuando la receta de entrada cambia, sincronizamos el formulario. */
+  /** La input se asigna después del constructor; effect mantiene el form sincronizado al editar. */
   constructor() {
-    const r = this.recipe();
-    if (r) {
-      this.title = r.title;
-      this.description = r.description;
-      this.difficulty = r.difficulty;
-      this.ingredients = [...r.ingredients];
-    }
+    effect(() => {
+      const recipe = this.recipe();
+      if (!recipe) return;
+
+      this.title = recipe.title;
+      this.description = recipe.description;
+      this.difficulty = recipe.difficulty;
+      this.ingredients = [...recipe.ingredients];
+      this.imageUrl = recipe.imageUrl ?? '';
+      this.imagePreview.set(this.imageUrl);
+      this.imageError.set('');
+    });
   }
 
   protected get isEdit(): boolean {
@@ -213,19 +260,23 @@ export class RecipeFormComponent {
   }
 
   protected onSubmit(): void {
+    this.formError.set('');
     const titleError = validateTitle(this.title);
     if (titleError) {
       this.toast.error(titleError);
+      this.formError.set(titleError);
       return;
     }
     const descError = validateDescription(this.description);
     if (descError) {
       this.toast.error(descError);
+      this.formError.set(descError);
       return;
     }
     const ingredientsError = validateIngredients(this.ingredients);
     if (ingredientsError) {
       this.toast.error(ingredientsError);
+      this.formError.set(ingredientsError);
       return;
     }
 
@@ -234,7 +285,41 @@ export class RecipeFormComponent {
       description: this.description.trim(),
       difficulty: this.difficulty,
       ingredients: this.ingredients,
+      imageUrl: this.imageUrl.trim() || undefined,
     });
+  }
+
+  protected onIngredientError(message: string | null): void {
+    this.formError.set(message ?? '');
+  }
+
+  protected onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    this.imageError.set('');
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      this.imageError.set('Choose a valid image file.');
+      input.value = '';
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      this.imageError.set('Image must be smaller than 2 MB.');
+      input.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imageUrl = typeof reader.result === 'string' ? reader.result : '';
+      this.imagePreview.set(this.imageUrl);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  protected clearImage(): void {
+    this.imageUrl = '';
+    this.imagePreview.set('');
+    this.imageError.set('');
   }
 
   protected onCancel(): void {

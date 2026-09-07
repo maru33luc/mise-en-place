@@ -47,6 +47,7 @@ Mise en Place is a fine-dining kitchen operations platform with a New York Miche
 - User-owned custom recipes isolated by authenticated user id.
 - Recipe detail route with ingredient and portion view.
 - Existing recipe cards, forms, validation, loading, alerts and delete confirmation retained.
+- Recipe images can be supplied as a URL or uploaded locally as a validated image file up to 2 MB; the selected image is stored as an in-memory data URL for the current phase.
 - Recipe model supports `season`, `tags` and `servings` for filtering and scaling work.
 
 ### Prep list

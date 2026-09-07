@@ -15,6 +15,7 @@ export interface Recipe {
   description: string;
   difficulty: Difficulty;
   ingredients: Ingredient[];
+  imageUrl?: string;
   season?: 'spring' | 'summer' | 'fall' | 'winter' | 'all';
   tags?: string[];
   servings?: number;

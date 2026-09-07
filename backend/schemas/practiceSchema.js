@@ -1,6 +1,14 @@
 const { z } = require('zod');
 
 const numericStringRegex = /^\d+(\.\d+)?$/;
+const imageUrlSchema = z.string().refine((value) => {
+  try {
+    if (value.startsWith('data:image/')) return /^data:image\/(jpeg|jpg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(value);
+    return ['http:', 'https:'].includes(new URL(value).protocol);
+  } catch {
+    return false;
+  }
+}, 'Image must be a valid URL or image data').max(3_000_000, 'Image must be smaller than 2 MB');
 
 const strictString = (field) =>
   z.string({
@@ -36,6 +44,7 @@ const createRecipeSchema = z.object({
     errorMap: () => ({ message: 'Dificultad debe ser: easy, medium o hard' })
   }),
   ingredients: z.array(ingredientSchema).min(1, 'Debe tener al menos 1 ingrediente')
+  ,imageUrl: imageUrlSchema.optional()
 });
 
 const updateRecipeSchema = createRecipeSchema.partial().refine(

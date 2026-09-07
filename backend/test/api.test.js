@@ -93,19 +93,22 @@ test('authentication and protected kitchen workflows work end to end', async () 
       title: 'Test Recipe',
       description: 'A recipe created by the API test.',
       difficulty: 'easy',
+      imageUrl: 'https://example.com/test-recipe.jpg',
       ingredients: [{ name: 'Salt', amount: 5, unit: 'g' }],
     }),
   });
   assert.equal(createdRecipe.response.status, 201);
   const recipeId = createdRecipe.body.data.id;
+  assert.equal(createdRecipe.body.data.imageUrl, 'https://example.com/test-recipe.jpg');
 
   const updatedRecipe = await request(`/api/recipes/${recipeId}`, {
     method: 'PUT',
     headers: authHeaders,
-    body: json({ title: 'Updated Test Recipe' }),
+    body: json({ title: 'Updated Test Recipe', imageUrl: 'https://example.com/updated-recipe.jpg' }),
   });
   assert.equal(updatedRecipe.response.status, 200);
   assert.equal(updatedRecipe.body.data.title, 'Updated Test Recipe');
+  assert.equal(updatedRecipe.body.data.imageUrl, 'https://example.com/updated-recipe.jpg');
 
   const menu = await request('/api/menu/2026-09-06', {
     method: 'PUT',

@@ -22,7 +22,7 @@ pnpm start
 | `JWT_EXPIRES` | Token lifetime |
 | `RATE_LIMIT_WINDOW_MS` | Rate limit window |
 | `RATE_LIMIT_MAX` | Maximum requests per window |
-| `BODY_LIMIT` | JSON request size limit |
+| `BODY_LIMIT` | JSON request size limit; use at least `5mb` for local recipe image uploads |
 
 See `.env.example` for the defaults used in local development.
 

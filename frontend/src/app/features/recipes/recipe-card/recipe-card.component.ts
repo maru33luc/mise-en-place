@@ -63,6 +63,8 @@ export class RecipeCardComponent {
   /** Elige la foto buscando palabras clave del título, descripción e ingredientes. */
   getRecipeImage(): string {
     const recipe = this.recipe();
+    if (recipe.imageUrl) return recipe.imageUrl;
+
     const haystack = RecipeCardComponent.normalize(
       [recipe.title, recipe.description, ...recipe.ingredients.map((i) => i.name)].join(' '),
     );

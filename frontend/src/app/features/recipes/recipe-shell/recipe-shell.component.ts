@@ -4,7 +4,7 @@ import { RecipesStore } from '@core/services/recipes.store';
 import { ConfirmDialogComponent } from '@shared/confirm-dialog/confirm-dialog.component';
 import { RecipeListComponent } from '../recipe-list/recipe-list.component';
 import { RecipeFormComponent } from '../recipe-form/recipe-form.component';
-import type { Recipe } from '@core/models/recipe.model';
+import type { Recipe, RecipePayload } from '@core/models/recipe.model';
 
 @Component({
   selector: 'app-recipe-shell',
@@ -43,22 +43,12 @@ export class RecipeShellComponent implements OnInit {
   protected readonly editingRecipe = signal<Recipe | null>(null);
   protected readonly recipeToDelete = signal<Recipe | null>(null);
 
-  protected onCreate(payload: {
-    title: string;
-    description: string;
-    difficulty: 'easy' | 'medium' | 'hard';
-    ingredients: import('@core/models/recipe.model').Ingredient[];
-  }): void {
+  protected onCreate(payload: RecipePayload): void {
     this.store.create(payload);
     this.showCreateForm.set(false);
   }
 
-  protected onUpdate(id: number, payload: {
-    title: string;
-    description: string;
-    difficulty: 'easy' | 'medium' | 'hard';
-    ingredients: import('@core/models/recipe.model').Ingredient[];
-  }): void {
+  protected onUpdate(id: number, payload: Partial<RecipePayload>): void {
     this.store.update(id, payload);
     this.editingRecipe.set(null);
   }

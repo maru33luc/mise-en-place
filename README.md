@@ -443,7 +443,7 @@ Send the header: `Authorization: Bearer <token>`
 | `JWT_EXPIRES` | `7d` | Token lifetime |
 | `RATE_LIMIT_WINDOW_MS` | `60000` | Rate-limit window, in ms |
 | `RATE_LIMIT_MAX` | `100` | Requests allowed per window |
-| `BODY_LIMIT` | `10kb` | Maximum JSON body size |
+| `BODY_LIMIT` | `5mb` | Maximum JSON body size for recipe image data |
 
 > ⚠️ `backend/.env` is git-ignored. Never commit production secrets.
 

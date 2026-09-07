@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, input, model } from '@angular/core';
+import { Component, EventEmitter, Output, input, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   validateIngredientName,
@@ -38,9 +38,12 @@ import type { Ingredient } from '@core/models/recipe.model';
         placeholder="Unit"
         class="text-input"
       />
-      <button type="button" class="secondary-button" (click)="add()" [disabled]="!canAdd()">
+      <button type="button" class="secondary-button" (click)="add()">
         Add
       </button>
+      @if (validationError()) {
+        <p class="validation-error" role="alert">{{ validationError() }}</p>
+      }
     </div>
 
     @if (ingredients().length > 0) {
@@ -126,6 +129,7 @@ import type { Ingredient } from '@core/models/recipe.model';
     }
     .secondary-button:hover:not(:disabled) { border-color: #555; color: #f0e6d2; }
     .secondary-button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .validation-error { grid-column: 1 / -1; margin: 0; color: #d47b6e; font: .7rem/1.4 Inter; }
     @media (max-width: 768px) { .ingredient-input { grid-template-columns: 1fr; } }
     `,
   ],
@@ -138,38 +142,35 @@ export class IngredientInputComponent {
   @Output() errorMessage = new EventEmitter<string | null>();
 
   protected name = '';
-  protected amount = '';
+  protected amount: number | null = null;
   protected unit = '';
-
-  protected canAdd(): boolean {
-    return (
-      validateIngredientName(this.name) === null &&
-      validateIngredientAmount(this.amount) === null &&
-      validateIngredientUnit(this.unit) === null
-    );
-  }
+  protected readonly validationError = signal('');
 
   protected add(): void {
     const nameError = validateIngredientName(this.name);
     if (nameError) {
+      this.validationError.set(nameError);
       this.errorMessage.emit(nameError);
       return;
     }
     const amountError = validateIngredientAmount(this.amount);
     if (amountError) {
+      this.validationError.set(amountError);
       this.errorMessage.emit(amountError);
       return;
     }
     const unitError = validateIngredientUnit(this.unit);
     if (unitError) {
+      this.validationError.set(unitError);
       this.errorMessage.emit(unitError);
       return;
     }
 
-    this.ingredients.update((list) => [...list, { name: this.name.trim(), amount: parseFloat(this.amount), unit: this.unit.trim() }]);
+    this.ingredients.update((list) => [...list, { name: this.name.trim(), amount: Number(this.amount), unit: this.unit.trim() }]);
     this.name = '';
-    this.amount = '';
+    this.amount = null;
     this.unit = '';
+    this.validationError.set('');
     this.errorMessage.emit(null);
   }
 

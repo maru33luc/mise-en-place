@@ -28,9 +28,11 @@ export function validateIngredientName(value: string): string | null {
   return null;
 }
 
-export function validateIngredientAmount(value: string): string | null {
-  const amount = parseFloat(value);
-  if (!value.trim() || isNaN(amount) || amount <= 0) return 'Amount must be a positive number';
+export function validateIngredientAmount(value: string | number | null | undefined): string | null {
+  const amount = typeof value === 'number' ? value : Number(value);
+  if (value === null || value === undefined || value === '' || !Number.isFinite(amount) || amount <= 0) {
+    return 'Amount must be a positive number';
+  }
   return null;
 }
 

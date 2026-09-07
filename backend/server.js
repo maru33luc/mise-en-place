@@ -12,7 +12,7 @@ const PORT             = Number(process.env.PORT);
 const ALLOWED_ORIGIN  = process.env.ALLOWED_ORIGIN                 || 'http://localhost:4200';
 const RATE_WINDOW_MS  = parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 60_000;
 const RATE_MAX        = parseInt(process.env.RATE_LIMIT_MAX, 10)   || 100;
-const BODY_LIMIT      = process.env.BODY_LIMIT                     || '10kb';
+const BODY_LIMIT      = process.env.BODY_LIMIT                     || '5mb';
 
 const app = express();
 

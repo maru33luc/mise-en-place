@@ -78,6 +78,7 @@ class Recipe {
       season: data.season || 'all',
       tags: data.tags || [],
       servings: data.servings || 2,
+      imageUrl: data.imageUrl || '',
       ingredients: data.ingredients || [],
       createdAt: new Date().toISOString(),
     };

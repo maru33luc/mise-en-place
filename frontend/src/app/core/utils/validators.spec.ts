@@ -28,6 +28,7 @@ describe('validators', () => {
   describe('validateIngredientAmount', () => {
     it('rejects empty values', () => expect(validateIngredientAmount('')).toBe('Amount must be a positive number'));
     it('rejects <=0', () => expect(validateIngredientAmount('0')).toBe('Amount must be a positive number'));
+    it('accepts numeric input values', () => expect(validateIngredientAmount(320)).toBeNull());
     it('accepts decimals', () => expect(validateIngredientAmount('1.5')).toBeNull());
   });
 
