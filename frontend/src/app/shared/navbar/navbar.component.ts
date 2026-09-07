@@ -13,7 +13,7 @@ import { PrepListService } from '@core/services/prep-list.service';
         <span>MP</span><strong>Mise en Place</strong>
       </a>
 
-      @if (auth.user()) {
+      @if (auth.isAuthenticated()) {
         <button
           class="menu-toggle"
           type="button"
