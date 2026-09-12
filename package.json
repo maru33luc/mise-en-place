@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently \"pnpm run backend:start\" \"pnpm run frontend:start\"",
     "backend:install": "cd backend && pnpm install",
-    "backend:start": "pnpm --dir backend start",
+    "backend:start": "pnpm --dir backend dev",
     "backend:test": "pnpm --dir backend test",
     "frontend:install": "cd frontend && pnpm install",
     "frontend:start": "pnpm --dir frontend start",
