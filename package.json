@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "dev": "concurrently \"pnpm run backend:start\" \"pnpm run frontend:start\"",
     "backend:install": "cd backend && pnpm install",
     "backend:start": "pnpm --dir backend start",
     "backend:test": "pnpm --dir backend test",
@@ -11,5 +12,8 @@
     "frontend:build": "pnpm --dir frontend build",
     "frontend:test": "pnpm --dir frontend exec ng test --watch=false",
     "frontend:lint": "pnpm --dir frontend lint"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5"
   }
 }
