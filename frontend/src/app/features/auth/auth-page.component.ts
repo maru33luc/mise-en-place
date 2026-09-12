@@ -10,12 +10,21 @@ import { AuthService } from '@core/services/auth.service';
   imports: [FormsModule, RouterLink],
   template: `
     <main class="auth">
-      <div class="visual"><p>THE KITCHEN<br><i>BEGINS HERE.</i></p></div>
+      <div class="visual">
+        <p>THE KITCHEN<br /><i>BEGINS HERE.</i></p>
+      </div>
 
-      <form #authForm="ngForm" novalidate (ngSubmit)="submit(authForm)" aria-labelledby="auth-title">
+      <form
+        #authForm="ngForm"
+        novalidate
+        (ngSubmit)="submit(authForm)"
+        aria-labelledby="auth-title"
+      >
         <a routerLink="/" class="back">← Back to the dining room</a>
         <p class="eyebrow">{{ mode === 'login' ? 'Welcome back' : 'Join the kitchen' }}</p>
-        <h1 id="auth-title">{{ mode === 'login' ? 'Enter the service' : 'Create your station' }}</h1>
+        <h1 id="auth-title">
+          {{ mode === 'login' ? 'Enter the service' : 'Create your station' }}
+        </h1>
 
         @if (mode === 'register') {
           <label for="auth-name">Name</label>
@@ -74,18 +83,72 @@ import { AuthService } from '@core/services/auth.service';
         }
 
         <button type="submit" [disabled]="submitting()">
-          {{ submitting() ? 'Please wait...' : mode === 'login' ? 'Sign in' : 'Register' }} <span>→</span>
+          {{ submitting() ? 'Please wait...' : mode === 'login' ? 'Sign in' : 'Register' }}
+          <span>→</span>
         </button>
         <p class="switch">
           {{ mode === 'login' ? 'New to the kitchen?' : 'Already have a station?' }}
-          <a [routerLink]="mode === 'login' ? '/auth/register' : '/auth/login'">{{ mode === 'login' ? 'Create one' : 'Sign in' }}</a>
+          <a [routerLink]="mode === 'login' ? '/auth/register' : '/auth/login'">{{
+            mode === 'login' ? 'Create one' : 'Sign in'
+          }}</a>
         </p>
       </form>
     </main>
   `,
-  styles: [`
-    :host{display:block}.auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;background:#0b0b0b}.visual{background:linear-gradient(90deg,rgba(8,8,8,.25),#0b0b0b),url('https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?w=1200&q=85&auto=format&fit=crop') center/cover;display:flex;align-items:flex-end;padding:clamp(2rem,8vw,8rem)}.visual p{font:500 clamp(2rem,5vw,5rem)/.88 'Playfair Display';color:#eee0c8}.visual i{color:#c9a96e}.auth form{width:min(400px,78%);align-self:center;margin:auto;padding:6rem 0}.back{color:#817767;text-decoration:none;font:600 .65rem Inter;letter-spacing:.12em;text-transform:uppercase}.eyebrow{margin-top:5rem;color:#c9a96e;text-transform:uppercase;font:600 .65rem Inter;letter-spacing:.2em}h1{color:#eee0c8;font:500 clamp(2.3rem,4vw,4rem) 'Playfair Display';margin:1rem 0 2.5rem}label{display:block;color:#988d7d;font:600 .65rem Inter;letter-spacing:.14em;text-transform:uppercase;margin:1.25rem 0 .55rem}input{display:block;width:100%;margin:0;background:transparent;border:0;border-bottom:1px solid #3a3328;color:#eee0c8;padding:.7rem 0;font:1rem Inter;outline:0}input:focus{border-color:#c9a96e}input[aria-invalid="true"]{border-color:#d47b6e}.field-error{color:#d47b6e;font:.68rem/1.4 Inter;margin:.45rem 0 0}.auth button{width:100%;margin-top:1.8rem;padding:1rem;background:#c9a96e;border:0;color:#080808;text-transform:uppercase;letter-spacing:.18em;font:600 .68rem Inter;cursor:pointer}.auth button:disabled{opacity:.55;cursor:wait}.auth button span{float:right;font-size:1.1rem}.switch{color:#817767;text-align:center;font:.75rem Inter;margin-top:1.5rem}.switch a{color:#c9a96e}.error{color:#f09a8c;background:rgba(120,40,40,.14);border:1px solid rgba(212,123,110,.35);padding:.75rem;font:.75rem/1.5 Inter;margin-top:1.25rem}@media(max-width:760px){.auth{grid-template-columns:1fr}.visual{display:none}.auth form{width:min(400px,82%);padding:7rem 0 3rem}.eyebrow{margin-top:3rem}h1{margin-bottom:2rem}}
-  `]
+  styles: [
+    `
+      :host{display:block;height:100dvh}
+
+.auth{
+  height:100dvh; /* antes: min-height:100vh */
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:#0b0b0b;
+}
+
+.visual{
+  background:linear-gradient(90deg,rgba(8,8,8,.25),#0b0b0b),url('https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?w=1200&q=85&auto=format&fit=crop') center/cover;
+  display:flex;
+  align-items:flex-end;
+  padding:clamp(1.5rem,5vw,4rem);
+}
+.visual p{font:500 clamp(1.6rem,4vw,3.4rem)/.9 'Playfair Display';color:#eee0c8}
+.visual i{color:#c9a96e}
+
+.auth form{
+  width:min(400px,86%);
+  height:100%;
+  margin:0 auto;
+  padding:clamp(.5rem,3vh,1.5rem) 0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  overflow-y:auto; /* red de seguridad si la pantalla es MUY chica */
+}
+
+.back{color:#817767;text-decoration:none;font:600 .65rem Inter;letter-spacing:.12em;text-transform:uppercase}
+.eyebrow{margin-top:1.5rem;color:#c9a96e;text-transform:uppercase;font:600 .65rem Inter;letter-spacing:.2em}
+h1{color:#eee0c8;font:500 clamp(1.6rem,3.2vw,2.8rem) 'Playfair Display';margin:.4rem 0 1.2rem}
+label{display:block;color:#988d7d;font:600 .65rem Inter;letter-spacing:.14em;text-transform:uppercase;margin:.8rem 0 .4rem}
+input{display:block;width:100%;margin:0;background:transparent;border:0;border-bottom:1px solid #3a3328;color:#eee0c8;padding:.6rem 0;font:1rem Inter;outline:0}
+input:focus{border-color:#c9a96e}
+input[aria-invalid="true"]{border-color:#d47b6e}
+.field-error{color:#d47b6e;font:.68rem/1.4 Inter;margin:.35rem 0 0}
+.auth button{width:100%;margin-top:1.2rem;padding:.85rem;background:#c9a96e;border:0;color:#080808;text-transform:uppercase;letter-spacing:.18em;font:600 .68rem Inter;cursor:pointer}
+.auth button:disabled{opacity:.55;cursor:wait}
+.auth button span{float:right;font-size:1.1rem}
+.switch{color:#817767;text-align:center;font:.75rem Inter;margin-top:1rem}
+.switch a{color:#c9a96e}
+.error{color:#f09a8c;background:rgba(120,40,40,.14);border:1px solid rgba(212,123,110,.35);padding:.65rem;font:.75rem/1.5 Inter;margin-top:1rem}
+
+@media(max-width:760px){
+  .auth{grid-template-columns:1fr}
+  .visual{display:none}
+  .auth form{padding:clamp(.5rem,3vh,1.5rem) 0}
+}
+    `,
+  ],
 })
 export class AuthPageComponent {
   private readonly route = inject(ActivatedRoute);
@@ -146,9 +209,15 @@ export class AuthPageComponent {
 
   private getBackendMessage(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
-      const body = error.error as { message?: string; errors?: ({ message?: string } | string)[] } | null;
+      const body = error.error as {
+        message?: string;
+        errors?: ({ message?: string } | string)[];
+      } | null;
       if (body?.errors?.length) {
-        return body.errors.map((item) => typeof item === 'string' ? item : item.message).filter(Boolean).join(' ');
+        return body.errors
+          .map((item) => (typeof item === 'string' ? item : item.message))
+          .filter(Boolean)
+          .join(' ');
       }
       if (body?.message) return body.message;
       if (error.status === 0) return 'Could not connect to the server. Please try again.';
